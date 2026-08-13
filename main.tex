@@ -1,5 +1,5 @@
 \documentclass[11pt,a4paper]{article}
-% isolation test
+
 % --- Packages ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -467,14 +467,16 @@ The first and second moments of $\eta$ can be found to be,
 \begin{equation} 
     \mathbb{E}[\eta]  = \sqrt{P} A^{-1} \qquad \mathbb{E}[\delta b] - A^{-1} \qquad \mathbb{E}[\delta M\theta] = 0
 \end{equation}
-\begin{split}
+\begin{align}
  \mathbb{E}[\eta\eta^T] &= \mathbb{E}[P(A^{-1}(\delta b - \delta M\theta))(A^{-1}(\delta b - \delta M\theta))^T]\\
-& = PA^{-1}\mathbb{E}[\delta b \delta b^T - \delta b (\delta M \theta)^T - (\delta M\theta)\delta b^T + (\delta M\theta)(\delta M\theta)^T(A^{-1})^T\\
-\end{split}
-\intertext{The expectation evaluates to an $O(P^{-1})$ quantity. Therefore}
-& \mathbb{E}[\eta\eta^T] = O(1)\\
-\intertext{Now we can arrive at the first and second moments of $\hat\theta(\Delta, K, P)$ }
-&\mathbb{E}[\hat\theta] = \theta(\Delta, K) + O(P^{-1})\\
+& = PA^{-1}\mathbb{E}[\delta b \delta b^T - \delta b (\delta M \theta)^T - (\delta M\theta)\delta b^T + (\delta M\theta)(\delta M\theta)^T(A^{-1})^T]
+\end{align}
+The expectation evaluates to an $O(P^{-1})$ quantity. Therefore
+\begin{equation*}\mathbb{E}[\eta\eta^T] = O(1) \end{equation*}
+Now we can arrive at the first and second moments of $\hat\theta(\Delta, K, P)$
+\begin{equation*}    
+    \mathbb{E}[\hat\theta] = \theta(\Delta, K) + O(P^{-1})
+\end{equation*}
 \begin{split}
 \mathbb{E}[\hat\theta \hat\theta^T] &= \mathbb{E}[\big (\theta(\Delta,K) + \frac{1}{\sqrt{P}}\eta(\Delta, K)+O(P^{-1})\big )\big (\theta(\Delta,K) + \frac{1}{\sqrt{P}}\eta(\Delta, K)+O(P^{-1})\big )^T]\\
 &= \mathbb{E}[\theta\theta^T + \frac{1}{\sqrt{P}}(\eta\theta^T + \theta\eta^T)+\frac{1}{P}\eta\eta^T+O(P^{-3/2})] \\
@@ -483,7 +485,7 @@ The first and second moments of $\eta$ can be found to be,
 \intertext{Now that we have the corrections $\theta(\Delta, K)$ with finite samples and since we already obtained the scaling of \theta(\Delta) we can then proceed to obtain the following:}
 &\hat\theta(\Delta, K, P) = \big (\theta_0 + \Delta^{1-\nu}\theta_1 + O(\Delta^{3-\nu})\big ) + \frac{1}{\sqrt{P}}\eta(\Delta, K) \\
 \end{split}
-\end{flalign*}
+
 %\end{equation*}
 
 \section{Finite Sampling with noisy target}
