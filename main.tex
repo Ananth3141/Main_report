@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools}
+\usepackage{float}
 \usepackage{empheq}
 \usepackage[normalem]{ulem} % [normalem] prevents the package from changing italics to underlines
 \usepackage{bm}
@@ -66,7 +67,7 @@ In this work, we attempt to theoretically arrive at the ability of an abstract g
 \section{Linear Toy Model}
 \label{sec:toy}
 
-\subsection{Data-generating process}
+\subsection{Data-generating process}\label{subsec:generation}
 
 Let $r \in \R$ be a one-dimensional control parameter. We model a bifurcation at $r = r_c$ by introducing a conditional Gaussian distribution whose covariance becomes singular in one direction as $r \to r_c$.
 
@@ -83,21 +84,27 @@ Since the covariance has a symmetric positive semi-definite structure it has an 
 \end{equation}
 where
 \begin{equation*}
-    \Lambda(r) = \diag(\lambda_1(r),…,\lambda_d(r))
+    \Lambda(r) = \diag(\lambda_1(r),\cdots,\lambda_d(r))
 \end{equation*}
-Now suppose that as $r\to r_c$, fluctuations in one direction become increasingly dominant. Mathematically , 
+Now suppose that as $r\to r_c$, fluctuations in one direction become increasingly dominant. Mathematically, 
 \begin{equation*}
     \lambda_1(r)\sim |r - r_c|^{-\nu},
 \end{equation*}
 while the other eigenvalues remain bounded:
 \begin{equation*}
-    \lambda_k(r)=O(1),\qquad k=2,…,d.
+    \lambda_k(r)=O(1),\qquad k=2,\cdots,d.
 \end{equation*}
 Then
 \begin{equation*}
 \dfrac{\lambda_k(r)}{\lambda_1(r)}\to\infty 
 \end{equation*}
 One direction exhibits parametrically faster growth of variance than the others.
+\begin{figure}[h]
+     \centering 
+     \includegraphics{figures/fig1_trajectories_and_covariance.pdf}
+     \label{fig:illustration1}
+     \caption{add caption}
+\end{figure}[H]
 Without loss of generality, choose coordinates so that the critical direction is the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Define
 \begin{equation}
 \Sigma(r) \;=\; I_d + \frac{1}{|r-r_c|^{\nu}} \, \be_1 \be_1^\top,
@@ -357,7 +364,19 @@ where $\hat{\theta}_0^{(0)} = \bhattheta^{(0)}_0$ is the limiting value at $\Del
 %  \item Confirm $K$-independence in the gap-limited regime (architecture independence above some minimum capacity).
 %  \item Compare to other 1D maps in the same Feigenbaum universality class: same exponent expected.
 %\end{enumerate}
+\begin{figure}[H]
+    \centering
+    \includegraphics{figures/critical_error_v_delta.pdf}
+    \label{fig:error_v_delta}
+    \caption{add caption}
+\end{figure}    
 
+\begin{figure}[H]
+    \centering
+    \includegraphics{figures/Loss_v_Delta.pdf}
+    \label{fig:loss_v_delta}
+    \caption{add caption}
+\end{figure}
 \section{Finite sampling effects for a deterministic target}\label{sec:finiteSampleDeterministic}
 
 Now we move on to analyzing the scaling of $\theta$ that solves the following problem:
