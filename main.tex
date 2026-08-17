@@ -5,6 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools}
 \usepackage{float}
+\usepackage{subcaption}
 \usepackage{empheq}
 \usepackage[normalem]{ulem} % [normalem] prevents the package from changing italics to underlines
 \usepackage{bm}
@@ -367,18 +368,29 @@ where $\hat{\theta}_0^{(0)} = \bhattheta^{(0)}_0$ is the limiting value at $\Del
 
 
 \begin{figure}[H]
-    \centering 
-    \includegraphics{figures/M_v_delta.pdf}
-    \label{fig:m_v_delta}
-    \caption{Add caption}
+    \centering
+
+    \begin{subfigure}{0.32 \textwidth} 
+        \includegraphics[width = \textwidth]{figures/M_v_delta.pdf}
+        \label{fig:m_v_delta}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32 \textwidth}
+            \includegraphics[width = \textwidth]{figures/b_v_delta.pdf}
+            \label{}
+            \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.32 \textwidth}
+        \includegraphics[width = \textwidth]{figures/theta_v_delta.pdf}
+        \label{}
+        \caption{}
+    \end{subfigure}
+caption{Add caption}
+
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics{figures/b_v_delta.pdf}
-    \label{fig:b_v_delta}
-    \caption{Add caption}
-\end{figure}
 
 
 
