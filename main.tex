@@ -458,11 +458,12 @@ As  $P\to\infty$
 which corresponds to the continuum solution obtained in the infinite-sample limit(see eqn \eqref{eq:theta_expansion}).
 %\end{flalign}
 
+
+%\end{equation*}
 \subsection{Perturbation around infinite sample limit}\label{subsec:deterministicPerturb}
 We now introduce the finite data effect as a perturbation to the infinite limit case.
-%\begin{flalign*} 
 \begin{equation} 
-    \hat{M} = M(\Delta, K) +\delta M 
+    \hat{M} = M(\Delta, K) + \delta M 
 \end{equation}
 and
 \begin{equation}
@@ -470,15 +471,15 @@ and
 \end{equation}
 where
 \begin{equation*}
-    \delta M = \frac{1}{P}\sum_{\mu=1}^{P} [w(r_\mu)\phi_\mu \phi_\mu^T - M];\hspace{2em}\delta b = \frac{1}{P}\sum_{\mu=1}^{P} [w(r_\mu)g(r_\mu)\phi_\mu - b]
+    \delta M = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)\bphi_\mu \bphi_\mu^\top - M\big];\qquad \delta b = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)g(r_\mu)\bphi_\mu - b\big]
 \end{equation*}
 The mean and variance of $\delta M$ and ${\delta b}$ are as follows:
 \begin{equation} 
-    \mathbb{E}[\delta M]= \mathbb{E}[\delta b]=0
+    \mathbb{E}[\delta M] = \mathbb{E}[\delta b] = 0
 \end{equation}
 and
 \begin{equation}
-    \mathbb{E}[\delta M \delta M^T] = \mathbb{E}[\delta b \delta b^T] = O(P^{-1})
+    \mathbb{E}[\delta M \delta M^\top] = O(P^{-1}), \qquad \mathbb{E}[\delta b \delta b^\top] = O(P^{-1})
 \end{equation}
 \begin{equation}
     \implies \delta M \sim O(P^{-1/2}),
@@ -489,47 +490,71 @@ Further we define,
 \begin{equation}
     A = M + \frac{\lambda}{P}I
 \end{equation}
-Then,
+Then, applying Neumann series expansion to first order in $P^{-1/2}$,
 \begin{equation} 
-    \hat\theta (\Delta,K,P) = (A + \delta M )^{-1} (b + \delta b) = \big (A^{-1} - A^{-1}\delta M A^{-1} + O(\delta M^2) \big )(b + \delta b)
+    \hat\btheta (\Delta,K,P) = (A + \delta M )^{-1} (b + \delta b) = \big (A^{-1} - A^{-1}\delta M A^{-1} + O(\delta M^2) \big )(b + \delta b)
 \end{equation}
 \begin{equation}
-    \implies \hat\theta = A^{-1}b + A^{-1}\delta b - A^{-1}\delta M A^{-1}b + O(P^{-1})
+    \implies \hat\btheta = A^{-1}b + A^{-1}\delta b - A^{-1}\delta M A^{-1}b + O(P^{-1})
 \end{equation}
 \begin{equation}
-     \implies \hat\theta = \theta + A^{-1}\delta b - A^{-1}\delta M \theta + O(P^{-1})
+     \implies \hat\btheta = \btheta + A^{-1}\delta b - A^{-1}\delta M \btheta + O(P^{-1})
 \end{equation}
 \begin{equation}
-     \implies \hat \theta (\Delta, K, P) = \theta(\Delta,K) + \frac{1}{\sqrt{P}}\eta (\Delta, K) + O(P^{-1})
+     \implies \hat \btheta (\Delta, K, P) = \btheta(\Delta, K) + \frac{1}{\sqrt{P}}\boldsymbol{\eta} (\Delta, K) + O(P^{-1})
 \end{equation}
 where 
 \begin{equation}
-    \eta(\Delta, K) = \sqrt{P} (A^{-1}\delta b - A^{-1}\delta M\theta)
+    \boldsymbol{\eta}(\Delta, K) = \sqrt{P} A^{-1}(\delta b - \delta M\btheta)
 \end{equation}
-The first and second moments of $\eta$ can be found to be,
+
+The first and second moments of $\boldsymbol{\eta}$ evaluate to:
 \begin{equation} 
-    \mathbb{E}[\eta]  = \sqrt{P} A^{-1} \qquad \mathbb{E}[\delta b] - A^{-1} \qquad \mathbb{E}[\delta M\theta] = 0
+    \mathbb{E}[\boldsymbol{\eta}] = \sqrt{P} \Big( A^{-1} \mathbb{E}[\delta b] - A^{-1} \mathbb{E}[\delta M]\btheta \Big) = 0
 \end{equation}
 \begin{align}
- \mathbb{E}[\eta\eta^T] &= \mathbb{E}[P(A^{-1}(\delta b - \delta M\theta))(A^{-1}(\delta b - \delta M\theta))^T]\\
-& = PA^{-1}\mathbb{E}[\delta b \delta b^T - \delta b (\delta M \theta)^T - (\delta M\theta)\delta b^T + (\delta M\theta)(\delta M\theta)^T(A^{-1})^T]
+\mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] &= P A^{-1} \mathbb{E}\Big[(\delta b - \delta M\btheta)(\delta b - \delta M\btheta)^\top\Big] (A^{-1})^\top \nonumber\\
+&= P A^{-1} \mathbb{E}\Big[\delta b \delta b^\top - \delta b (\delta M \btheta)^\top - (\delta M\btheta)\delta b^\top + (\delta M\btheta)(\delta M\btheta)^\top\Big] A^{-1}
 \end{align}
-The expectation evaluates to an $O(P^{-1})$ quantity. Therefore
-\begin{equation*}\mathbb{E}[\eta\eta^T] = O(1) \end{equation*}
-Now we can arrive at the first and second moments of $\hat\theta(\Delta, K, P)$
-\begin{equation*}    
-    \mathbb{E}[\hat\theta] = \theta(\Delta, K) + O(P^{-1})
-\end{equation*}
-\begin{split}
-\mathbb{E}[\hat\theta \hat\theta^T] &= \mathbb{E}[\big (\theta(\Delta,K) + \frac{1}{\sqrt{P}}\eta(\Delta, K)+O(P^{-1})\big )\big (\theta(\Delta,K) + \frac{1}{\sqrt{P}}\eta(\Delta, K)+O(P^{-1})\big )^T]\\
-&= \mathbb{E}[\theta\theta^T + \frac{1}{\sqrt{P}}(\eta\theta^T + \theta\eta^T)+\frac{1}{P}\eta\eta^T+O(P^{-3/2})] \\
-&= \theta\theta^T + \frac{1}{P}\langle\eta\eta^T\rangle+O(P^{-3/2})\\
-&= \theta\theta^T + O(P^{-1})\text{ ,to the leading order in P.}
-\intertext{Now that we have the corrections $\theta(\Delta, K)$ with finite samples and since we already obtained the scaling of \theta(\Delta) we can then proceed to obtain the following:}
-&\hat\theta(\Delta, K, P) = \big (\theta_0 + \Delta^{1-\nu}\theta_1 + O(\Delta^{3-\nu})\big ) + \frac{1}{\sqrt{P}}\eta(\Delta, K) \\
-\end{split}
+Since each expectation term in the bracket scales as $O(P^{-1})$, the factor of $P$ cancels, leaving:
+\begin{equation}
+    \mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] = \mathcal{C}(\Delta, K) = O(1)
+\end{equation}
+where $\mathcal{C}(\Delta, K)$ is the sampling covariance matrix of the estimator fluctuation.
 
-%\end{equation*}
+Using these results, the first and second moments of the estimator $\hat\btheta(\Delta, K, P)$ are:
+\begin{equation}  
+    \mathbb{E}[\hat\btheta] = \btheta(\Delta, K) + O(P^{-1})
+\end{equation}
+\begin{align}
+\mathbb{E}[\hat\btheta \hat\btheta^\top] &= \mathbb{E}\left[\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)^\top\right] \nonumber\\
+&= \btheta\btheta^\top + \frac{1}{\sqrt{P}}\left(\mathbb{E}[\boldsymbol{\eta}]\btheta^\top + \btheta\mathbb{E}[\boldsymbol{\eta}^\top]\right) + \frac{1}{P}\mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] + O(P^{-3/2}) \nonumber\\
+&= \btheta\btheta^\top + \frac{1}{P}\mathcal{C}(\Delta, K) + O(P^{-3/2}) \nonumber\\
+&= \btheta\btheta^\top + O(P^{-1}) \quad \text{to leading order in } P.
+\end{align}
+
+Now, incorporating the scaling behavior with respect to the gap parameter $\Delta$ from Section~\ref{sec:scaling_rigorous}, where $\btheta(\Delta) = \btheta_0 + \Delta^{1-\nu}\btheta_1 + O(\Delta^{3-\nu})$, we obtain the joint finite-sample and critical-gap scaling for the estimator:
+\begin{equation}
+    \hat\btheta(\Delta, K, P) = \btheta_0 + \btheta_1 \Delta^{1-\nu} + \frac{1}{\sqrt{P}}\boldsymbol{\eta}(\Delta, K) + O\left(\Delta^{3-\nu}, P^{-1}\right).
+\end{equation}
+This explicitly separates the deterministic approximation error induced by the critical gap $\Delta$ from the $O(P^{-1/2})$ statistical fluctuations caused by finite dataset size $P$.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \includegraphics[width=\textwidth]{figures/clt_verification_variance_vs_P.pdf}
+        \label{}
+        \caption{}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \includegraphics[width=\textwidth]{figures/noise_gap_scaling_C00_vs_Delta.pdf}
+        \label{}
+        \caption{}
+    \end{subfigure}
+    \label{}
+    \caption{}
+\end{figure}
+
 
 \section{Finite Sampling with noisy target}
 $$r_\mu \overset{i.i.d}{\sim} \rho_\Delta, $$
