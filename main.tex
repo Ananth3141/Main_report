@@ -56,7 +56,7 @@
 
 % Highlight box for key results
 \newtcolorbox{keybox}[1][]{colback=blue!5!white, colframe=blue!50!black, sharp corners, boxrule=0.5pt, #1}
-
+\def\sgp#1{{\sf\textcolor{red}{#1}}}
 \title{\textbf{Generalization near a bifurcation point}}
 \author{}
 \date{}
@@ -64,6 +64,11 @@
 \begin{document}
 
 \maketitle
+
+\sgp{A short introduction - what is the goal, how are you going to achieve it. A quick summary of the results so far.}
+
+\sgp{Science, Structure, Details, Tone -- pedagogical, Figures -- CCC, Formatting}
+
 In this work, we attempt to theoretically arrive at the ability of an abstract generative deep neural network to generalize near critical points like divergences, bifurcations, etc when trained on data away from criticality. 
 \section{Linear Toy Model}
 \label{sec:toy}
@@ -102,10 +107,9 @@ Then
 One direction exhibits parametrically faster growth of variance than the others.
 \begin{figure}[h]
      \centering 
-     \includegraphics{figures/fig1_trajectories_and_covariance.pdf}
+     \includegraphics{figures/fig1.pdf}
      \label{fig:illustration1}
-     \caption{\textbf{Data-generating process dynamics and covariance structure across the transition to criticality.} (\textbf{Top}) Representative sample trajectories $x_t$ generated off-criticality ($r=0.5$, $\tau=2.0$, left) and near-criticality ($r=0.01$, $\tau=100.0$, right). As the control parameter $r \to r_c$, trajectories exhibit marked critical slowing down, characterized by enhanced fluctuation amplitudes and persistent memory.
-              (\textbf{Bottom}) Corresponding empirical covariance matrices $\Sigma_{t,t'}$. Off-criticality (left), correlations remain localized along the main diagonal. Near criticality (right), long-range temporal correlations emerge as the leading eigenvalue diverges according to $\sigma_1(r) = 1 + \vert{}r-r_c\vert{}^{-\nu}$ , establishing a dominant critical direction $e_1$.}
+     \caption{\textbf{Data-generating process dynamics and covariance structure across the transition to criticality.} (\textbf{Top}) Representative sample trajectories $x_t$ generated off-criticality ($r=0.5$, $\tau=2.0$, left) and near-criticality ($r=0.01$, $\tau=100.0$, right). As the control parameter $r \to r_c$, trajectories exhibit marked critical slowing down, characterized by enhanced fluctuation amplitudes and persistent memory. (\textbf{Bottom}) Corresponding empirical covariance matrices $\Sigma_{t,t'}$. Off-criticality (left), correlations remain localized along the main diagonal. Near criticality (right), long-range temporal correlations emerge as the leading eigenvalue diverges according to $\sigma_1(r) = 1 + \vert{}r-r_c\vert{}^{-\nu}$ , establishing a dominant critical direction $\be_1$.}
 \end{figure}[H]
 Without loss of generality, choose coordinates so that the critical direction is the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Define
 \begin{equation}
@@ -143,7 +147,7 @@ This inverse can be calculated and we get
 \textbf{Critical direction:} $1/\sigma_1(r) = |r-r_c|^\nu/(1 + |r-r_c|^\nu) \to 0$ as $r \to r_c$, so the score component along $\be_1$ vanishes at the bifurcation. \textbf{Non-critical directions:} the score is simply $-x_k$ for $k \geq 2$.
 
 \section{Student model and loss function}
-
+\sgp{What is student model, write a small paragraph on your approach to this model. What are you going to gain/find out from the model predictions?}
 We adopt a linear-in-$\bx$ student with general $r$-dependence:
 \begin{equation}
 s_{\btheta}(\bx, r) \;=\; -A(r) \bx, \qquad A(r) \in \R^{d \times d}.
@@ -155,7 +159,7 @@ A(r) \;=\; \sum_{k=0}^{K-1} A_k\, \phi_k(r), \qquad \phi_k(r) = r^k.
 \]
 The trainable parameters are the $K$ matrices $\{A_k\}$, totaling $Kd^2$ scalar parameters.
 
-The (population) score-matching loss is
+The (population) score-matching loss is \sgp{add a small schematic}
 \begin{equation}
 \mathcal{L}(\btheta) \;=\; \meanr{\meanx{ \big\| s_{\btheta}(\bx, r) - s^*(\bx, r) \big\|^2 }},
 \label{eq:loss_pop}
@@ -208,7 +212,7 @@ Then
 \mathcal{L}_1(a) \;=\; \int w(r)\, \big(a(r) - g(r)\big)^2\, dr.
 \label{eq:L1_compact}
 \end{equation}
-This is a \emph{weighted least-squares polynomial fit} of $g$ on the support of $\rho_\Delta$ (i.e., on $|r-r_c| > \Delta/2$). Note that
+This is a \emph{weighted least-squares polynomial fit} of $g$ on the support of $\rho_\Delta$ (i.e., on $|r-r_c| > \Delta/2$). \sgp{Expand this section.} Note that
 \begin{itemize}
   \item For $|r-r_c| \ll 1$: $g(r) \approx |r-r_c|^\nu$ --- the cusp.
   \item For $|r-r_c| \to \infty$: $g(r) \to 1$ --- saturates.
@@ -283,7 +287,7 @@ For the outer region, $\sigma_1(r) \to 1$, $g(r) \to 1$, $w(r) \to \rho_0$:
 M_{kl}^{\text{out}} \;\approx\; \rho_0 \int_{r_* < |r| < L} r^{k+l}\, dr, \qquad b_k^{\text{out}} \;\approx\; \rho_0 \int_{r_* < |r| < L} r^k\, dr.
 \label{eq:outer}
 \end{equation}
-Both are $\Delta$-independent at this level of approximation.
+\sgp{Cite other equations and figures as much as possible.} Both are $\Delta$-independent at this level of approximation.
 
 \subsection{Expansion of \texorpdfstring{$\bhattheta(\Delta)$}{theta hat(Delta)}}
 
@@ -391,7 +395,7 @@ where $\hat{\theta}_0^{(0)} = \bhattheta^{(0)}_0$ is the limiting value at $\Del
 \caption{\textbf{Deterministic scaling properties of design matrix moments and critical parameters near the excised gap ($\nu = 0.35$).}.
          \textbf{(a)} Absolute deviation of the leading moment matrix element $\vert{}M_{00}(\Delta) - M_{00}(0)\vert{}$ against the gap size $\Delta$. The numerical trend verifies the theoretical inner-region scaling contribution of $\Delta^{1-\nu}$ derived in Eq. (22).
          \textbf{(b)} Absolute magnitude of the linear correction term $\vert{}b_1\vert{}$ vs. $\Delta$. The empirical power-law fit ($\sim \Delta^{1.03}$) matches the analytical boundary scaling expectation of $\Delta^{1.00}$ (Eq. 23).
-         \textbf{(c)} Deviation of the leading polynomial coefficient $\vert{}\hat{\theta}_0\vert{}$ as a function of $\Delta$. The fitted scaling exponent ($\sim \Delta^{0.65}$) perfectly confirms the leading-order expansion $\hat{\theta}_0(\Delta) = \hat{\theta}_0^{(0)} + c_1 \Delta^{1-\nu} + O(\Delta)$ for $1 - \nu = 0.65$ (Eq. 25).   }
+         \textbf{(c)} Deviation of the leading polynomial coefficient $\vert{}\hat{\theta}_0\vert{}$ as a function of $\Delta$. The fitted scaling exponent ($\sim \Delta^{0.65}$) perfectly confirms the leading-order expansion $\hat{\theta}_0(\Delta) = \hat{\theta}_0^{(0)} + c_1 \Delta^{1-\nu} + O(\Delta)$ for $1 - \nu = 0.65$ (Eq. 25). \sgp{Avoid titles, combine all of them in one figures with different colors + labels. Remove $\Delta < 10^{-7}$}}
 
 \end{figure}
 
@@ -404,7 +408,7 @@ where $\hat{\theta}_0^{(0)} = \bhattheta^{(0)}_0$ is the limiting value at $\Del
     \label{fig:error_v_delta}
     \caption{\textbf{Training and Critical Mean Squared Error (MSE) dependence on gap size $\Delta$ for $\nu = 0.75$.}
     \textbf{(Left)} Train MSE evaluated on the training distribution away from the gap.
-    \textbf{(Right)} Critical MSE evaluated inside the excised gap near $r_c$ across polynomial degrees $K \in \{2, 4, 6, 8, 10, 16\}$. Increasing model capacity $K$ lowers overall approximation error, while the divergence rate as $\Delta \to 0$ remains governed by the critical exponent $1-\nu$.}
+    \textbf{(Right)} Critical MSE evaluated inside the excised gap near $r_c$ across polynomial degrees $K \in \{2, 4, 6, 8, 10, 16\}$. Increasing model capacity $K$ lowers overall approximation error, while the divergence rate as $\Delta \to 0$ remains governed by the critical exponent $1-\nu$. \sgp{Combine this with previous figure. Reduce aspect ratio. Define mathematical variables - $\mathcal{L}$, $\mathcal{L}_{\rm mse}$}}
 \end{figure}    
 
 \section{Finite sampling effects for a deterministic target}\label{sec:finiteSampleDeterministic}
@@ -413,7 +417,7 @@ Now we move on to analyzing the scaling of $\theta$ that solves the following pr
 \begin{equation}\label{eq:lossDeterminsitic}
 \mathcal{L} = \frac{1}{2}\sum_{\mu=1}^P \big [w(r_\mu) \big ( \mathbf{\hat\theta}^T \phi(r_\mu) - y_\mu)^2\big ] + \frac{\lambda}{2}||\hat\theta||^2
 \end{equation}
-The loss function in \eqref{eq:L1_compact} has been modified to accommodate finite number of data points P. 
+\sgp{What is the meaning of this loss-function, why is there a $\lambda$. Cite relevant references, why is it called the ridge loss. Do a toy-example to show how minimization works and put it as a boxes.} The loss function in \eqref{eq:L1_compact} has been modified to accommodate finite number of data points P. 
 
 Differentiating the loss function with respect to $\hat\theta$ and setting to zero, we arrive at
 $$ \sum_{\mu=1}^{P} w(r_\mu)\phi(r_\mu)\phi(r_\mu)^T \hat\theta - \sum_{\mu=1}^{P} w(r_\mu)y_\mu\phi(r_\mu) + \lambda \hat\theta = 0$$
@@ -467,6 +471,7 @@ which corresponds to the continuum solution obtained in the infinite-sample limi
 
 %\end{equation*}
 \subsection{Perturbation around infinite sample limit}\label{subsec:deterministicPerturb}
+\sgp{This has to be expanded. Give as much details as possible.}
 We now introduce the finite data effect as a perturbation to the infinite limit case.
 \begin{equation} 
     \hat{M} = M(\Delta, K) + \delta M 
@@ -479,6 +484,7 @@ where
 \begin{equation*}
     \delta M = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)\bphi_\mu \bphi_\mu^\top - M\big];\qquad \delta b = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)g(r_\mu)\bphi_\mu - b\big]
 \end{equation*}
+\sgp{Why and how are you making these claims?}
 The mean and variance of $\delta M$ and ${\delta b}$ are as follows:
 \begin{equation} 
     \mathbb{E}[\delta M] = \mathbb{E}[\delta b] = 0
@@ -492,6 +498,7 @@ and
 \qquad
 \delta b \sim O(P^{-1/2})
 \end{equation}
+\sgp{Show that fluctuations are of the $O(P^{-1/2})$.}
 Further we define,
 \begin{equation}
     A = M + \frac{\lambda}{P}I
