@@ -64,6 +64,15 @@
 \begin{document}
 
 \maketitle
+<<<<<<< Updated upstream
+=======
+
+\sgp{A short introduction - what is the goal, how are you going to achieve it. A quick summary of the results so far.}
+
+\sgp{Science, Structure, Details, Tone -- pedagogical, Figures -- CCC, Formatting}
+\section{Introduction}
+
+>>>>>>> Stashed changes
 In this work, we attempt to theoretically arrive at the ability of an abstract generative deep neural network to generalize near critical points like divergences, bifurcations, etc when trained on data away from criticality. 
 \section{Linear Toy Model}
 \label{sec:toy}
@@ -104,9 +113,14 @@ One direction exhibits parametrically faster growth of variance than the others.
      \centering 
      \includegraphics{figures/fig1_trajectories_and_covariance.pdf}
      \label{fig:illustration1}
+<<<<<<< Updated upstream
      \caption{\textbf{Data-generating process dynamics and covariance structure across the transition to criticality.} (\textbf{Top}) Representative sample trajectories $x_t$ generated off-criticality ($r=0.5$, $\tau=2.0$, left) and near-criticality ($r=0.01$, $\tau=100.0$, right). As the control parameter $r \to r_c$, trajectories exhibit marked critical slowing down, characterized by enhanced fluctuation amplitudes and persistent memory.
               (\textbf{Bottom}) Corresponding empirical covariance matrices $\Sigma_{t,t'}$. Off-criticality (left), correlations remain localized along the main diagonal. Near criticality (right), long-range temporal correlations emerge as the leading eigenvalue diverges according to $\sigma_1(r) = 1 + \vert{}r-r_c\vert{}^{-\nu}$ , establishing a dominant critical direction $e_1$.}
 \end{figure}[H]
+=======
+     \caption{\textbf{Data-generating process dynamics and covariance structure across the transition to criticality.} (\textbf{Top}) Representative sample trajectories $x_t$ generated off-criticality ($r=0.5$, $\tau=2.0$, left) and near-criticality ($r=0.01$, $\tau=100.0$, right). As the control parameter $r \to r_c$, trajectories exhibit marked critical slowing down, characterized by enhanced fluctuation amplitudes and persistent memory. (\textbf{Bottom}) Corresponding empirical covariance matrices $\Sigma_{t,t'}$. Off-criticality (left), correlations remain localized along the main diagonal. Near criticality (right), long-range temporal correlations emerge as the leading eigenvalue diverges according to $\sigma_1(r) = 1 + \vert{}r-r_c\vert{}^{-\nu}$ , establishing a dominant critical direction $\be_1$.}
+\end{figure}
+>>>>>>> Stashed changes
 Without loss of generality, choose coordinates so that the critical direction is the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Define
 \begin{equation}
 \Sigma(r) \;=\; I_d + \frac{1}{|r-r_c|^{\nu}} \, \be_1 \be_1^\top,
@@ -532,7 +546,7 @@ Using these results, the first and second moments of the estimator $\hat\btheta(
 \begin{equation}  
     \mathbb{E}[\hat\btheta] = \btheta(\Delta, K) + O(P^{-1})
 \end{equation}
-\begin{align}
+\begin{align}\label{eq:theta_variance}
 \mathbb{E}[\hat\btheta \hat\btheta^\top] &= \mathbb{E}\left[\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)^\top\right] \nonumber\\
 &= \btheta\btheta^\top + \frac{1}{\sqrt{P}}\left(\mathbb{E}[\boldsymbol{\eta}]\btheta^\top + \btheta\mathbb{E}[\boldsymbol{\eta}^\top]\right) + \frac{1}{P}\mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] + O(P^{-3/2}) \nonumber\\
 &= \btheta\btheta^\top + \frac{1}{P}\mathcal{C}(\Delta, K) + O(P^{-3/2}) \nonumber\\
@@ -559,7 +573,7 @@ This explicitly separates the deterministic approximation error induced by the c
     \end{subfigure}
     \label{}
     \caption{\textbf{Validation of Central Limit Theorem scaling and gap-dependent fluctuation amplification for finite sample size $P$.}
-    \textbf{(a)} Variance of the estimated parameter $\operatorname{Var}[\hat{\theta}_0]$ versus dataset size $P$ over $S = 250$ independent data realizations. The empirical slope $\alpha = -1.03$ confirms the standard $O(P^{-1})$ CLT decay of estimator variance (Eq. 54).
+    \textbf{(a)} Variance of the estimated parameter $\operatorname{Var}[\hat{\theta}_0]$ versus dataset size $P$ over $S = 250$ independent data realizations. The empirical slope $\alpha = -1.03$ confirms the standard $O(P^{-1})$ CLT decay of estimator variance (Eq.\ref{eq:theta_variance}).
     \textbf{(b)} Scaling of the empirical covariance matrix entry $\mathcal{C}_{00}(\Delta)$ with critical gap $\Delta$. The power-law scaling $\mathcal{C}_{00}(\Delta) \sim \Delta^{-0.49}$ highlights the noise amplification driven by the ill-conditioning of the empirical design matrix $\hat{M}$ as $\Delta \to 0$.}
 \end{figure}
 
