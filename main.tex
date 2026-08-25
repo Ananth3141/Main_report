@@ -50,6 +50,7 @@
 \newcommand{\diag}{\operatorname{diag}}
 \newcommand{\indicator}{\mathbf{1}}
 \newcommand{\rmd}{\textrm{d}}
+\newcommand{\del}{\delta}
 
 \newcommand{\meanr}[1]{\E_{r \sim \rho_\Delta}\!\left[#1\right]}
 \newcommand{\meanx}[1]{\E_{\bx \mid r}\!\left[#1\right]}
@@ -121,7 +122,7 @@ where $\nu > 0$ is the critical exponent. The eigenvalues of $\Sigma(r)$ are
 \[
 \sigma_1(r) \;=\; 1 + |r-r_c|^{-\nu}, \qquad \sigma_k(r) = 1 \quad (k=2,\ldots,d).
 \]
-As $r \to r_c$, the variance along $\be_1$ diverges as $|r-r_c|^{-\nu}$, mimicking the diverging fluctuations near a critical point. \sout{The exponent $\nu$ is universal: for the period-doubling cascade in the logistic map at the Feigenbaum point, $\nu = \log 2/\log \delta_F \approx 0.4498$, with $\delta_F \approx 4.6692$ the Feigenbaum constant}.
+As $r \to r_c$, the variance along $\be_1$ diverges as $|r-r_c|^{-\nu}$, mimicking the diverging fluctuations near a critical point. \sout{The exponent $\nu$ is universal: for the period-doubling cascade in the logistic map at the Feigenbaum point, $\nu = \log 2/\log \del_F \approx 0.4498$, with $\del_F \approx 4.6692$ the Feigenbaum constant}.
 
 \subsection{True score function}
 
@@ -391,7 +392,7 @@ where $\hat{\theta}_0^{(0)} = \bhattheta^{(0)}_0$ is the limiting value at $\Del
 %
 %\section{Predictions and summary of Part I}
 %
-%For the logistic map at the Feigenbaum point, $\nu = \log 2/\log\delta_F$ with $\delta_F \approx 4.6692$, giving $\nu \approx 0.4498$. So:
+%For the logistic map at the Feigenbaum point, $\nu = \log 2/\log\del_F$ with $\del_F \approx 4.6692$, giving $\nu \approx 0.4498$. So:
 %\begin{equation}
 %\epsilon_g(\Delta) \;\sim\; \Delta^{2\nu} \;\approx\; \Delta^{0.90}.
 %\end{equation}
@@ -463,7 +464,7 @@ and
     \hat{b} = \frac{1}{P}\sum_{\mu=1}^{P}w(r_\mu)y_\mu\phi(r_\mu)
 \end{equation}
 So the empirical estimator can be compactly written as 
-\begin{equation} 
+\begin{equation}\label{eq:finite_sample_theta}
     \hat{\theta}(\Delta, K, P) = \big ( \hat{M} + \frac{\lambda}{P}I\big )^{-1}\hat{b} 
 \end{equation}
 \begin{equation}
@@ -488,10 +489,10 @@ Then the estimator is
 
 Define
 \begin{equation}
-    M(\Delta, K) = \mathbb{E}_{r\sim \rho_\Delta}[\hat{M}] = \mathbb{E}_{r\sim\rho_\Delta}[w(r)\phi(r)\phi(r)^T]
+    M(\Delta, K) = \E_{r\sim \rho_\Delta}[\hat{M}] = \E_{r\sim\rho_\Delta}[w(r)\phi(r)\phi(r)^T]
 \end{equation}    
 \begin{equation}
-    b(\Delta, K) = \mathbb{E}_{r\sim\rho_\Delta}[\hat{b}] = \mathbb{E}_{r\sim\rho_\Delta}[w(r)g(r)\phi(r)]
+    b(\Delta, K) = \E_{r\sim\rho_\Delta}[\hat{b}] = \E_{r\sim\rho_\Delta}[w(r)g(r)\phi(r)]
 \end{equation}
 As  $P\to\infty$
 \begin{equation}
@@ -504,31 +505,102 @@ which corresponds to the continuum solution obtained in the infinite-sample limi
 %\end{equation*}
 \subsection{Perturbation around infinite sample limit}\label{subsec:deterministicPerturb}
 \sgp{This has to be expanded. Give as much details as possible.}
-We now introduce the finite data effect as a perturbation to the infinite limit case.
-\begin{equation} 
-    \hat{M} = M(\Delta, K) + \delta M 
+We now introduce the finite data effect as a perturbation to the infinite limit case. That is, we introduce fluctuations in the quantities $M(\Delta,K)$(eqn.\ref{eq:M_expansion}) and $b(\Delta,K)$(eqn.\ref{eq:b_expansion}) as a function of the number of data samples P, around the infinite sample limit. Therefore the quantities mentioned above become:
+\begin{equation}\label{eq:finite_m_expression} 
+    \hat{M} = M(\Delta, K) + \del M 
 \end{equation}
 and
-\begin{equation}
-    \hat{b} = b(\Delta, K) + \delta b
+\begin{equation}\label{eq:finite_b_expression}
+    \hat{b} = b(\Delta, K) + \del b
 \end{equation}
 where
-\begin{equation*}
-    \delta M = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)\bphi_\mu \bphi_\mu^\top - M\big];\qquad \delta b = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)g(r_\mu)\bphi_\mu - b\big]
-\end{equation*}
+\begin{equation}
+    \del M = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)\bphi_\mu \bphi_\mu^\top - M(\Delta,K)\big];\qquad \del b = \frac{1}{P}\sum_{\mu=1}^{P} \big[w(r_\mu)g(r_\mu)\bphi_\mu - b(\Delta,K)\big] \label{eq:delM_delb_expression}
+\end{equation}
+Hence, in the finite sample limit, the quantity of interest is (see eqn.\ref{eq:finite_sample_theta})
+\begin{equation}\label{eq:theta_hat}
+    \hat{\btheta}(\Delta,K,P) = (M(\Delta, K)+\del M+\frac{\lambda}{P}I)^{-1}(b(\Delta, K) +\del b)
+\end{equation}
+Since the problem involves a score-matching objective which is a quadratic loss function in terms of $\hat{\btheta}$ , to arrive at an explicit scaling of $\hat{\btheta}$ with $P$, we compute the mean and variance of the key quantities in the following manner:
 \sgp{Why and how are you making these claims?}
-The mean and variance of $\delta M$ and ${\delta b}$ are as follows:
-\begin{equation} 
-    \mathbb{E}[\delta M] = \mathbb{E}[\delta b] = 0
-\end{equation}
+
+\begin{align} 
+    \E[\del M] &= \E[\hat{M}- M] \nonumber\\
+                         &= \E[\hat{M}] - \E[M] \nonumber\\
+                         &= 0 \label{mean_delM} 
+\end{align}
 and
+\begin{align}
+    \E[\del b] & = \E[\hat{b} - b] \nonumber\\
+                        & = \E[\hat{b}] - \E[b] \nonumber\\
+                        & = 0 \label{mean_delb}
+\end{align}           
+From \eqref{eq:delM_delb_expression}, we can define
 \begin{equation}
-    \mathbb{E}[\delta M \delta M^\top] = O(P^{-1}), \qquad \mathbb{E}[\delta b \delta b^\top] = O(P^{-1})
+    \del b = \frac{1}{P}\sum_{\mu=1}^{P}v_\mu, \qquad\text{where } v_\mu \equiv w(r_\mu)g(r_\mu)\phi(r_\mu)-b
 \end{equation}
+Each $v_\mu \in \mathbb{R}^K$ is an i.i.d zero-mean random vector as $\E_{r\sim\rho_\Delta}[w(r)g(r)\phi(r)]=b$.
+Now,
+\begin{align}
+    \E[\del b\del b^{\top}] &= \E\Bigg[ \Bigg( \frac{1}{P}\sum_{\mu=1}^{P}v_\mu\Bigg)\Bigg( \frac{1}{P}\sum_{\mu=1}^{P}v_\mu^{\top}\Bigg)\Bigg] \nonumber \\
+                                &= \frac{1}{P^2}\sum_{\mu=1}^{P}\sum_{\nu=1}^{P}\E[v_\mu v_\nu^\top]
+\end{align}
+\begin{align}
+    \implies \E[\del b\del b^{\top}] &= \dfrac{1}{P^2}\sum_{\mu=1}^{P}\E[v_\mu v_\mu^{\top}]\nonumber \\
+                                    &= \dfrac{1}{P^2}\cdot P\cdot \E_{r\sim\rho_\Delta}[v(r)v(r)^{\top}]\nonumber \\
+                                    &= \dfrac{1}{P}\text{Cov}_{r\sim\rho_\Delta}\big(w(r)g(r)\phi(r) \big)
+\end{align}
+To evaluate the covariance matrix entrywise:
 \begin{equation}
-    \implies \delta M \sim O(P^{-1/2}),
+    [\text{Cov}_{r\sim\rho_{\Delta}}]_{kl} = \int \rho_\Delta(r) (w(r)g(r)r^k - b_k)(w(r)g(r)r^l - b_l)\rmd r
+\end{equation}
+Since $w(r)g(r) = \rho_\Delta(r)\sigma_1(r)\cdot\frac{1}{\sigma_1(r)} = \rho_\Delta(r)$, this simplifies directly to the moments of the unweighted distribution:
+\begin{equation}
+    [\text{Cov}_{r\sim\rho_\Delta}\big( w(r)g(r)\phi(r)\big)]_{kl} = \int \rho_\Delta(r)r^{k+l}\rmd r- b_kb_l = O(1)
+\end{equation}
+Thus, 
+\begin{equation}
+    \E[\del b\del b ^{\top}]= \frac{1}{P}\Sigma_b \sim O(P^{-1})
+\end{equation}
+Similarly we can proceed to see how the fluctuations in $\del M$ scale with P. From \eqref{eq:delM_delb_expression}
+\begin{equation}
+    \del M_{ij} = \frac{1}{P}\sum_{\mu=1}^{P}Z_{ij}(\mu),\qquad \text{where }Z_{ij}(\mu)\equiv w(r_\mu)\phi_i(r_\mu)\phi_j(r_\mu) - M_{ij}
+\end{equation}
+Each scalar $Z_{ij}(\mu)$ is zero-mean and i.i.d across samples $\mu$. Taking the expected product of two matrix element perturbations $\del M_{ij}$ and $\del M_{kl}$:
+\begin{align}
+    \E[\del M_{ij}\del M_{kl}] &= \E\Bigg[ \Bigg( \dfrac{1}{P}\sum_{\mu=1}^{P}Z_{ij}(\mu)\Bigg)\Bigg( \dfrac{1}{P}\sum_{\nu=1}^{P}Z_{kl}(\nu)\Bigg)\Bigg]\nonumber \\
+                              &= \dfrac{1}{P^2}\sum_{\mu=1}^{P}\sum_{\nu=1}^{P}\E[Z_{ij}(\mu)Z_{kl}(\nu)]
+\end{align}
+Only the diagonal terms ($\mu=\nu$) contribute non-zero values. Therefore
+\begin{align}
+    \E[\del M_{ij}\del M_{kl}] &= \dfrac{1}{P^2}\sum_{\mu=1}^{P}\E[Z_{ij}(\mu)Z_{kl}(\mu)]\nonumber \\
+    &= \frac{1}{P}\text{Cov}_{r\sim\rho_\Delta}\big( w(r)\phi_i(r)\phi_j(r), w(r)\phi_k(r)\phi_l(r)\big)
+\end{align}
+Expanding the covariance integral for monomial basis $\phi_i(R) = r^{i}$:
+\begin{align}
+    \text{Cov}_{r\sim\rho_\Delta}\big( w(r)r^{i+j}, w(r)r^{k+l}\big) &= \int \rho_\Delta(r)\big(w(r)r^{i+j} - M_{ij}) \big)\big( w(r)r^{k+l} - M_{kl}\big)\rmd r \nonumber \\
+                     &= \int \rho_\Delta(r)w(r)^2r^{i+j+k+l}\rmd r- M_{ij}M_{kl}
+ \end{align}
+The convergence of the integral in Cov($w(r)r^{i+j},w(r)r^{k+l}$) depends explicitly on the value of the critical exponent $\nu$. Because $w(r) = \rho_\Delta(r)\sigma_1(r)\sim|r|^{-\nu}$ near the gap edge, the integrand contains $w(r)^2\sim |r|^{-2\nu}$.
+Therefore, the quantity $\E[\del M\del M^{\top}]$ scales as
+ \begin{align}
+ \implies \text{Cov}_{r\sim\rho_\Delta}\big( w(r)\phi_i(r)\phi_j(r), w(r)\phi_k(r)\phi_l(r)\big)\sim 
+ \begin{cases}
+ O(1), \qquad \nu<1/2 \\
+ \ln(1/\Delta), \qquad \nu=1/2\\
+ \Delta^{-(2\nu-1)}\qquad \nu>1/2
+ \end{cases}
+\end{align}
+\begin{align}
+    \implies \E[\del M\del M^{top}] \sim 
+    \begin{cases}
+        
+    \end{cases}
+\end{align}
+\begin{equation}
+    \implies \del M \sim O(P^{-1/2}),
 \qquad
-\delta b \sim O(P^{-1/2})
+\del b \sim O(P^{-1/2})
 \end{equation}
 \sgp{Show that fluctuations are of the $O(P^{-1/2})$.}
 Further we define,
@@ -537,43 +609,43 @@ Further we define,
 \end{equation}
 Then, applying Neumann series expansion to first order in $P^{-1/2}$,
 \begin{equation} 
-    \hat\btheta (\Delta,K,P) = (A + \delta M )^{-1} (b + \delta b) = \big (A^{-1} - A^{-1}\delta M A^{-1} + O(\delta M^2) \big )(b + \delta b)
+    \hat\btheta (\Delta,K,P) = (A + \del M )^{-1} (b + \del b) = \big (A^{-1} - A^{-1}\del M A^{-1} + O(\del M^2) \big )(b + \del b)
 \end{equation}
 \begin{equation}
-    \implies \hat\btheta = A^{-1}b + A^{-1}\delta b - A^{-1}\delta M A^{-1}b + O(P^{-1})
+    \implies \hat\btheta = A^{-1}b + A^{-1}\del b - A^{-1}\del M A^{-1}b + O(P^{-1})
 \end{equation}
 \begin{equation}
-     \implies \hat\btheta = \btheta + A^{-1}\delta b - A^{-1}\delta M \btheta + O(P^{-1})
+     \implies \hat\btheta = \btheta + A^{-1}\del b - A^{-1}\del M \btheta + O(P^{-1})
 \end{equation}
 \begin{equation}
      \implies \hat \btheta (\Delta, K, P) = \btheta(\Delta, K) + \frac{1}{\sqrt{P}}\boldsymbol{\eta} (\Delta, K) + O(P^{-1})
 \end{equation}
 where 
 \begin{equation}
-    \boldsymbol{\eta}(\Delta, K) = \sqrt{P} A^{-1}(\delta b - \delta M\btheta)
+    \boldsymbol{\eta}(\Delta, K) = \sqrt{P} A^{-1}(\del b - \del M\btheta)
 \end{equation}
 
 The first and second moments of $\boldsymbol{\eta}$ evaluate to:
 \begin{equation} 
-    \mathbb{E}[\boldsymbol{\eta}] = \sqrt{P} \Big( A^{-1} \mathbb{E}[\delta b] - A^{-1} \mathbb{E}[\delta M]\btheta \Big) = 0
+    \E[\boldsymbol{\eta}] = \sqrt{P} \Big( A^{-1} \E[\del b] - A^{-1} \E[\del M]\btheta \Big) = 0
 \end{equation}
 \begin{align}
-\mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] &= P A^{-1} \mathbb{E}\Big[(\delta b - \delta M\btheta)(\delta b - \delta M\btheta)^\top\Big] (A^{-1})^\top \nonumber\\
-&= P A^{-1} \mathbb{E}\Big[\delta b \delta b^\top - \delta b (\delta M \btheta)^\top - (\delta M\btheta)\delta b^\top + (\delta M\btheta)(\delta M\btheta)^\top\Big] A^{-1}
+\E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] &= P A^{-1} \E\Big[(\del b - \del M\btheta)(\del b - \del M\btheta)^\top\Big] (A^{-1})^\top \nonumber\\
+&= P A^{-1} \E\Big[\del b \del b^\top - \del b (\del M \btheta)^\top - (\del M\btheta)\del b^\top + (\del M\btheta)(\del M\btheta)^\top\Big] A^{-1}
 \end{align}
 Since each expectation term in the bracket scales as $O(P^{-1})$, the factor of $P$ cancels, leaving:
 \begin{equation}
-    \mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] = \mathcal{C}(\Delta, K) = O(1)
+    \E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] = \mathcal{C}(\Delta, K) = O(1)
 \end{equation}
 where $\mathcal{C}(\Delta, K)$ is the sampling covariance matrix of the estimator fluctuation.
 
 Using these results, the first and second moments of the estimator $\hat\btheta(\Delta, K, P)$ are:
 \begin{equation}  
-    \mathbb{E}[\hat\btheta] = \btheta(\Delta, K) + O(P^{-1})
+    \E[\hat\btheta] = \btheta(\Delta, K) + O(P^{-1})
 \end{equation}
 \begin{align}
-\mathbb{E}[\hat\btheta \hat\btheta^\top] &= \mathbb{E}\left[\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)^\top\right] \nonumber\\
-&= \btheta\btheta^\top + \frac{1}{\sqrt{P}}\left(\mathbb{E}[\boldsymbol{\eta}]\btheta^\top + \btheta\mathbb{E}[\boldsymbol{\eta}^\top]\right) + \frac{1}{P}\mathbb{E}[\boldsymbol{\eta}\boldsymbol{\eta}^\top] + O(P^{-3/2}) \nonumber\\
+\E[\hat\btheta \hat\btheta^\top] &= \E\left[\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)^\top\right] \nonumber\\
+&= \btheta\btheta^\top + \frac{1}{\sqrt{P}}\left(\E[\boldsymbol{\eta}]\btheta^\top + \btheta\E[\boldsymbol{\eta}^\top]\right) + \frac{1}{P}\E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] + O(P^{-3/2}) \nonumber\\
 &= \btheta\btheta^\top + \frac{1}{P}\mathcal{C}(\Delta, K) + O(P^{-3/2}) \nonumber\\
 &= \btheta\btheta^\top + O(P^{-1}) \quad \text{to leading order in } P.
 \end{align}
