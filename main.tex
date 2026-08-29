@@ -589,14 +589,18 @@ Therefore, the quantity $\E[\del M\del M^{\top}]$ scales as
  O(1), \qquad \nu<1/2 \\
  \ln(1/\Delta), \qquad \nu=1/2\\
  \Delta^{-(2\nu-1)}\qquad \nu>1/2
- \end{cases}
+ \end{cases}\label{eq:cov_finite_scaling}
 \end{align}
-\begin{align}
-    \implies \E[\del M\del M^{top}] \sim 
-    \begin{cases}
-        
-    \end{cases}
-\end{align}
+Having established the entrywise covariance of the empirical design matrix in Eq.\ref{eq:cov_finite_scaling}, we express $\del M$ as a stochastic matrix operator scaled by the Central Limit Theorem rate $P^{-1/2}$:
+\begin{equation}
+    
+\end{equation}    
+\subsection{Trade-off Between Deterministic Gap Bias and Statistical Sampling Noise}\label{subsec:three_case_scaling}
+From eqn.\ref{eq:cov_finite_scaling}, we can see that the effect of finite data affects the way that the covariance scales. To understand how finite-data fluctuations 
+\begin{enumerate}
+    \item \textbf{Sub-critical egime ($\nu < 1/2$):}
+\end{enumerate}
+
 \begin{equation}
     \implies \del M \sim O(P^{-1/2}),
 \qquad
@@ -630,8 +634,8 @@ The first and second moments of $\boldsymbol{\eta}$ evaluate to:
     \E[\boldsymbol{\eta}] = \sqrt{P} \Big( A^{-1} \E[\del b] - A^{-1} \E[\del M]\btheta \Big) = 0
 \end{equation}
 \begin{align}
-\E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] &= P A^{-1} \E\Big[(\del b - \del M\btheta)(\del b - \del M\btheta)^\top\Big] (A^{-1})^\top \nonumber\\
-&= P A^{-1} \E\Big[\del b \del b^\top - \del b (\del M \btheta)^\top - (\del M\btheta)\del b^\top + (\del M\btheta)(\del M\btheta)^\top\Big] A^{-1}
+    \E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] &= P A^{-1} \E\Big[(\del b - \del M\btheta)(\del b - \del M\btheta)^\top\Big] (A^{-1})^\top \nonumber\\
+    &= P A^{-1} \E\Big[\del b \del b^\top - \del b (\del M \btheta)^\top - (\del M\btheta)\del b^\top + (\del M\btheta)(\del M\btheta)^\top\Big] A^{-1}
 \end{align}
 Since each expectation term in the bracket scales as $O(P^{-1})$, the factor of $P$ cancels, leaving:
 \begin{equation}
@@ -644,10 +648,10 @@ Using these results, the first and second moments of the estimator $\hat\btheta(
     \E[\hat\btheta] = \btheta(\Delta, K) + O(P^{-1})
 \end{equation}
 \begin{align}
-\E[\hat\btheta \hat\btheta^\top] &= \E\left[\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)^\top\right] \nonumber\\
-&= \btheta\btheta^\top + \frac{1}{\sqrt{P}}\left(\E[\boldsymbol{\eta}]\btheta^\top + \btheta\E[\boldsymbol{\eta}^\top]\right) + \frac{1}{P}\E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] + O(P^{-3/2}) \nonumber\\
-&= \btheta\btheta^\top + \frac{1}{P}\mathcal{C}(\Delta, K) + O(P^{-3/2}) \nonumber\\
-&= \btheta\btheta^\top + O(P^{-1}) \quad \text{to leading order in } P.
+    \E[\hat\btheta \hat\btheta^\top] &= \E\left[\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)\left(\btheta + \frac{1}{\sqrt{P}}\boldsymbol{\eta} + O(P^{-1})\right)^\top\right] \nonumber\\
+    &= \btheta\btheta^\top + \frac{1}{\sqrt{P}}\left(\E[\boldsymbol{\eta}]\btheta^\top + \btheta\E[\boldsymbol{\eta}^\top]\right) + \frac{1}{P}\E[\boldsymbol{\eta}\boldsymbol{\eta}^\top] + O(P^{-3/2}) \nonumber\\
+    &= \btheta\btheta^\top + \frac{1}{P}\mathcal{C}(\Delta, K) + O(P^{-3/2}) \nonumber\\
+    &= \btheta\btheta^\top + O(P^{-1}) \quad \text{to leading order in } P.
 \end{align}
 
 Now, incorporating the scaling behavior with respect to the gap parameter $\Delta$ from Section~\ref{sec:scaling_rigorous}, where $\btheta(\Delta) = \btheta_0 + \Delta^{1-\nu}\btheta_1 + O(\Delta^{3-\nu})$, we obtain the joint finite-sample and critical-gap scaling for the estimator:
