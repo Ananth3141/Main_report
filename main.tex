@@ -593,8 +593,17 @@ Therefore, the quantity $\E[\del M\del M^{\top}]$ scales as
 \end{align}
 Having established the entrywise covariance of the empirical design matrix in Eq.\ref{eq:cov_finite_scaling}, we express $\del M$ as a stochastic matrix operator scaled by the Central Limit Theorem rate $P^{-1/2}$:
 \begin{equation}
-    
-\end{equation}    
+    \del M = \frac{1}{\sqrt{P}}\Xi(\Delta, \nu)
+\end{equation}
+where $\Xi(\Delta, \nu) \in \mathbb{R}^{K\cross K}$ is zero-mean Gaussian matrix random variable with $\mathbb{E}[\Xi] = 0$.\\
+The spectral norm of the perturbation scales strictly as:
+\begin{equation}
+    \Vert{}\delta M\Vert{}_2 \;=\; O_p\left( \frac{1}{\sqrt{P}} \, \mathcal{F}(\Delta, \nu) \right)
+\end{equation}
+with the gap-dependent fluctuation profile given explicitly by:
+\begin{equation}
+    \mathcal{F}(\Delta, \nu) \;=\; \begin{cases}  > O(1), & \nu < 1/2 \\  > O\left(\sqrt{\ln(1/\Delta)}\right), & \nu = 1/2 \\  > O\left(\Delta^{-(\nu - 1/2)}\right), & \nu > 1/2  \end{cases}
+\end{equation}     
 \subsection{Trade-off Between Deterministic Gap Bias and Statistical Sampling Noise}\label{subsec:three_case_scaling}
 From eqn.\ref{eq:cov_finite_scaling}, we can see that the effect of finite data affects the way that the covariance scales. To understand how finite-data fluctuations 
 \begin{enumerate}
