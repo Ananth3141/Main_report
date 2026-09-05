@@ -58,6 +58,7 @@
 % Highlight box for key results
 \newtcolorbox{keybox}[1][]{colback=blue!5!white, colframe=blue!50!black, sharp corners, boxrule=0.5pt, #1}
 \def\sgp#1{{\sf\textcolor{red}{#1}}}
+\def\ant#1{{\sf\textcolor{green}{#1}}}
 \title{\textbf{Generalization near a bifurcation point}}
 \author{}
 \date{}
@@ -71,7 +72,7 @@
 \sgp{Science, Structure, Details, Tone -- pedagogical, Figures -- CCC, Formatting}
 
 \section{Intorduction}\label{sec:Intro}
-Understanding how generative models generalize near critical phenomena—such as bifurcations, phase transitions, and scale-invariant fluctuations—is a central challenge in machine learning for the physical sciences. In critical regimes, system dynamics are marked by diverging variance and persistent temporal memory (critical slowing down). This study evaluates the theoretical capacity of deep neural networks—specifically score-based generative models—to learn and generalize near critical points when trained exclusively on off-critical data.
+Understanding how generative models generalize near critical phenomena—such as bifurcations, phase transitions, and scale-invariant fluctuations—is a central challenge in machine learning for the physical sciences. In critical regimes, system dynamics are marked by diverging variance and persistent temporal memory (critical slowing down). This study evaluates the theoretical capacity of deep neural networks—specifically score-based generative models—to learn and generalize near critical points when trained exclusively using off-critical data.
 \section{Linear Toy Model}
 \label{sec:toy}
 
@@ -88,13 +89,12 @@ Let $r \in \R$ be a one-dimensional control parameter. We model a bifurcation at
 \paragraph{Critical covariance.} Let $\Sigma(r)$ be the covariance of the distribution given in \eqref{eq:cond_dist}.\\
 Since the covariance has a symmetric positive semi-definite structure it has an eigen decomposition as follows,
 \begin{equation}\label{eq:eigenForm}
-    \Sigma(r) = Q(r)\Lambda(r)Q(r)^T
+    \Sigma(r) = Q(r)\Lambda(r)Q(r)^T, \qquad  \Lambda(r) = \diag(\lambda_1(r),\cdots,\lambda_d(r))
 \end{equation}
-where
-\begin{equation*}
-    \Lambda(r) = \diag(\lambda_1(r),\cdots,\lambda_d(r))
-\end{equation*}
-Now suppose that as $r\to r_c$, fluctuations in one direction become increasingly dominant. Mathematically, 
+where the orthonormal columns of $Q(r) = [\be_1(r), \be_2(r),\ldots, \be_d(r)]$ define the \textbf{principal fluctuation directions(eigenvectors)} in state space $\mathbb{R}^d$, and $\lambda_k(r)$ represents the variance along direction $\be_k(r)$.
+
+\paragraph{Diverging critical mode.} Near the bifurcation point $r_c$, the system undergoes critical fluctuations where variance along the primary Order Parameter mode--- the critical direction $\be_1(r)$---diverges, while fluctuations along all transverse modes $\be_{k\geq 2}$ remain bounded.\\
+Mathematically, as $r\to r_c$:
 \begin{equation*}
     \lambda_1(r)\sim |r - r_c|^{-\nu},
 \end{equation*}
@@ -102,27 +102,26 @@ while the other eigenvalues remain bounded:
 \begin{equation*}
     \lambda_k(r)=O(1),\qquad k=2,\cdots,d.
 \end{equation*}
-Then
+Here, "direction" refers specifically to the principal eigenvector $\be_1$ corresponding to the dominant eigenvalue $\lambda_1(r)$. Along this eigenvector, variance grows parametrically faster then in any orthogonal subspace:
 \begin{equation*}
 \dfrac{\lambda_k(r)}{\lambda_1(r)}\to\infty 
 \end{equation*}
-One direction exhibits parametrically faster growth of variance than the others.
+One direction exhibits parametrically faster growth of variance than the others.\\
 \begin{figure}[h]
      \centering 
      \includegraphics{figures/fig1.pdf}
      \label{fig:illustration1}
      \caption{\textbf{Data-generating process dynamics and covariance structure across the transition to criticality.} (\textbf{Top}) Representative sample trajectories $x_t$ generated off-criticality ($r=0.5$, $\tau=2.0$, left) and near-criticality ($r=0.01$, $\tau=100.0$, right). As the control parameter $r \to r_c$, trajectories exhibit marked critical slowing down, characterized by enhanced fluctuation amplitudes and persistent memory. (\textbf{Bottom}) Corresponding empirical covariance matrices $\Sigma_{t,t'}$. Off-criticality (left), correlations remain localized along the main diagonal. Near criticality (right), long-range temporal correlations emerge as the leading eigenvalue diverges according to $\sigma_1(r) = 1 + \vert{}r-r_c\vert{}^{-\nu}$ , establishing a dominant critical direction $\be_1$.}
 \end{figure}
-Without loss of generality, choose coordinates so that the critical direction is the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Define
-\begin{equation}
+Without loss of generality, we choose our coordinate basis such that the critical direction coincides with the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Therefore the covariance matrix simplifies to,
+\begin{equation}\label{eq:corr_matrix}
 \Sigma(r) \;=\; I_d + \frac{1}{|r-r_c|^{\nu}} \, \be_1 \be_1^\top,
-\label{eq:Sigma}
 \end{equation}
 where $\nu > 0$ is the critical exponent. The eigenvalues of $\Sigma(r)$ are
 \[
 \sigma_1(r) \;=\; 1 + |r-r_c|^{-\nu}, \qquad \sigma_k(r) = 1 \quad (k=2,\ldots,d).
 \]
-As $r \to r_c$, the variance along $\be_1$ diverges as $|r-r_c|^{-\nu}$, mimicking the diverging fluctuations near a critical point. \sout{The exponent $\nu$ is universal: for the period-doubling cascade in the logistic map at the Feigenbaum point, $\nu = \log 2/\log \del_F \approx 0.4498$, with $\del_F \approx 4.6692$ the Feigenbaum constant}.
+As $r \to r_c$, the variance along $\be_1$ diverges as $|r-r_c|^{-\nu}$, mimicking the diverging fluctuations near a critical point. \sout{The exponent $\nu$ is universal: for the period-doubling cascade in the logistic map at the Feigenbaum point, $\nu = \log 2/\log \del_F \approx 0.4498$, with $\del_F \approx 4.6692$ the Feigenbaum constant}. The critical exponent $\nu > 0$ governs the power-law divergence of variance along the order parameter mode, playing an analogous role to critical susceptibility exponents ($\gamma$) in continuous phase transitions or soft-mode instabilities in dynamical systems.
 
 \subsection{True score function}
 
@@ -149,7 +148,7 @@ This inverse can be calculated and we get
 \textbf{Critical direction:} $1/\sigma_1(r) = |r-r_c|^\nu/(1 + |r-r_c|^\nu) \to 0$ as $r \to r_c$, so the score component along $\be_1$ vanishes at the bifurcation. \textbf{Non-critical directions:} the score is simply $-x_k$ for $k \geq 2$.
 
 \section{Student model and loss function}\label{sec:student_and_loss}
-\sgp{What is student model, write a small paragraph on your approach to this model. What are you going to gain/find out from the model predictions?}
+\sgp{What is student model, write a small paragraph on your approach to this model. What are you going to gain/find out from the model predictions?}\ant{Has been addressed below}
 \subsection{Teacher-Student Framework}\label{subsec:teacher_student}
 The Teacher-Student framework is a classic analytical paradigm used to study learning, generalization, and structural inference in neural networks. In this framework, data generation and learning are divided into two distinct components:
 \begin{itemize}
@@ -245,7 +244,7 @@ we arrive at a \emph{1D weighted least-squares polynomial fit}:
 \mathcal{L}_1(a) \;=\; \int w(r)\, \big(a(r) - g(r)\big)^2\, \rmd r.
 \label{eq:L1_compact}
 \end{equation}
-of $g$ on the support of $\rho_\Delta$ (i.e., on $|r-r_c| > \Delta/2$). \sgp{Expand this section.} Note that
+of $g$ on the support of $\rho_\Delta$ (i.e., on $|r-r_c| > \Delta/2$). \sgp{Expand this section.}\ant{Not sure how exactly to expand} Note that
 \begin{itemize}
   \item For $|r-r_c| \ll 1$: $g(r) \approx |r-r_c|^\nu$ --- the cusp.
   \item For $|r-r_c| \to \infty$: $g(r) \to 1$ --- saturates.
@@ -504,7 +503,7 @@ which corresponds to the continuum solution obtained in the infinite-sample limi
 
 %\end{equation*}
 \subsection{Perturbation around infinite sample limit}\label{subsec:deterministicPerturb}
-\sgp{This has to be expanded. Give as much details as possible.}
+\sgp{This has to be expanded. Give as much details as possible.}\ant{Has been attempted below. Will modify according to feedback}\\
 We now introduce the finite data effect as a perturbation to the infinite limit case. That is, we introduce fluctuations in the quantities $M(\Delta,K)$(eqn.\ref{eq:M_expansion}) and $b(\Delta,K)$(eqn.\ref{eq:b_expansion}) as a function of the number of data samples P, around the infinite sample limit. Therefore the quantities mentioned above become:
 \begin{equation}\label{eq:finite_m_expression} 
     \hat{M} = M(\Delta, K) + \del M 
@@ -522,7 +521,7 @@ Hence, in the finite sample limit, the quantity of interest is (see eqn.\ref{eq:
     \hat{\btheta}(\Delta,K,P) = (M(\Delta, K)+\del M+\frac{\lambda}{P}I)^{-1}(b(\Delta, K) +\del b)
 \end{equation}
 Since the problem involves a score-matching objective which is a quadratic loss function in terms of $\hat{\btheta}$ , to arrive at an explicit scaling of $\hat{\btheta}$ with $P$, we compute the mean and variance of the key quantities in the following manner:
-\sgp{Why and how are you making these claims?}
+\sgp{Why and how are you making these claims?}\ant{Has been addressed above}
 
 \begin{align} 
     \E[\del M] &= \E[\hat{M}- M] \nonumber\\
@@ -559,7 +558,7 @@ Since $w(r)g(r) = \rho_\Delta(r)\sigma_1(r)\cdot\frac{1}{\sigma_1(r)} = \rho_\De
     [\text{Cov}_{r\sim\rho_\Delta}\big( w(r)g(r)\phi(r)\big)]_{kl} = \int \rho_\Delta(r)r^{k+l}\rmd r- b_kb_l = O(1)
 \end{equation}
 Thus, 
-\begin{equation}
+\begin{equation}\label{eq:del_b_fluctuation}
     \E[\del b\del b ^{\top}]= \frac{1}{P}\Sigma_b \sim O(P^{-1})
 \end{equation}
 Similarly we can proceed to see how the fluctuations in $\del M$ scale with P. From \eqref{eq:delM_delb_expression}
@@ -595,28 +594,21 @@ Having established the entrywise covariance of the empirical design matrix in Eq
 \begin{equation}
     \del M = \frac{1}{\sqrt{P}}\Xi(\Delta, \nu)
 \end{equation}
-where $\Xi(\Delta, \nu) \in \mathbb{R}^{K\cross K}$ is zero-mean Gaussian matrix random variable with $\mathbb{E}[\Xi] = 0$.\\
+where $\Xi(\Delta, \nu) \in \mathbb{R}^{K\times K}$ is zero-mean Gaussian matrix random variable with $\mathbb{E}[\Xi] = 0$.\\
 The spectral norm of the perturbation scales strictly as:
 \begin{equation}
     \Vert{}\delta M\Vert{}_2 \;=\; O_p\left( \frac{1}{\sqrt{P}} \, \mathcal{F}(\Delta, \nu) \right)
 \end{equation}
 with the gap-dependent fluctuation profile given explicitly by:
-\begin{equation}
-    \mathcal{F}(\Delta, \nu) \;=\; \begin{cases}  > O(1), & \nu < 1/2 \\  > O\left(\sqrt{\ln(1/\Delta)}\right), & \nu = 1/2 \\  > O\left(\Delta^{-(\nu - 1/2)}\right), & \nu > 1/2  \end{cases}
-\end{equation}    
-\subsection{Trade-off Between Deterministic Gap Bias and Finite Data Statistical Noise}\label{subsec:three_case_scaling}
- From eqn.\ref{eq:cov_finite_scaling}, we can see that the effect of finite data affects the way that the covariance scales. To understand how finite-data fluctuations 
-\begin{enumerate}
-    \item \textbf{Sub-critical egime ($\nu < 1/2$):}
-\end{enumerate}
-
-\begin{equation}
-    \implies \del M \sim O(P^{-1/2}),
-\qquad
-\del b \sim O(P^{-1/2})
+\begin{equation}\label{eq:del_M_fluctuation}
+    \mathcal{F}(\Delta, \nu) \;=\; \begin{cases}   O(1), & \nu < 1/2 \\   O\left(\sqrt{\ln(1/\Delta)}\right), & \nu = 1/2 \\   O\left(\Delta^{-(\nu - 1/2)}\right), & \nu > 1/2  \end{cases}
 \end{equation}
 \sgp{Show that fluctuations are of the $O(P^{-1/2})$.}
-Further we define,
+\ant{Has been addressed. F($\Delta,\nu$) may need a little bit more detailed derivation}
+\subsection{Trade-off Between Deterministic Gap Bias and Finite Data Statistical Noise}\label{subsec:theta_scaling}
+We can use the results from eqn.(\ref{eq:del_b_fluctuation}) and (\ref{eq:del_M_fluctuation}) to see the explicit scaling of the quantity in eqn.(\ref{eq:theta_hat})
+
+We define,
 \begin{equation}
     A = M + \frac{\lambda}{P}I
 \end{equation}
