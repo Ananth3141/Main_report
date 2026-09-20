@@ -43,6 +43,7 @@
 \newcommand{\btheta}{\boldsymbol{\theta}}
 \newcommand{\bhattheta}{\hat{\boldsymbol{\theta}}}
 \newcommand{\be}{\mathbf{e}}
+\newcommand{\bvec}{\mathbf{b}}
 \newcommand{\Tr}{\operatorname{Tr}}
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\Cov}{\operatorname{Cov}}
@@ -229,12 +230,12 @@ Since the constant target function $g_k(r) \equiv 1 (k\geq 2)$ lies directly ins
 \subsection{Behavior along the critical direction}\label{subsec:crit_behavior}
 All non-trivial learning dynamics collapse entirely into the critical direction $\be_1$. Dropping the subscript($a(r)\equiv a_1(r)$), the loss in \eqref{eq:complete_loss_fn} simplifies to,
 \begin{equation}
-    \mathcal{L}(a) \;=\; \int \rho_{\Delta}(r)\Big(a(r)- \frac{1}{\sigma_1(r)}\Big)\,\rmd r
+    \mathcal{L}(a) \;=\; \int \rho_{\Delta}(r)\Big(a(r)- \frac{1}{\sigma(r)}\Big)^2\sigma(r)\,\rmd r
     \label{eq:L1}
 \end{equation}
 Further defining the effective \emph{target function} $g(r)$ and the \emph{weighting function} $w(r)$
 \begin{equation}
-    g(r)\equiv \frac{1}{\sigma(r)} \;=\; \frac{|r - r_c|^\nu}{1 + |r - r_c|^\nu} \qquad w(r)\equiv \rho_{\Delta}(r)\sigma_1(r) 
+    g(r)\equiv \frac{1}{\sigma(r)} \;=\; \frac{|r - r_c|^\nu}{1 + |r - r_c|^\nu} \qquad w(r)\equiv \rho_{\Delta}(r)\sigma(r) 
     \label{eq:gw}
 \end{equation}
 we arrive at a \emph{1D weighted least-squares polynomial fit}:
@@ -263,10 +264,10 @@ The loss becomes a quadratic form in $\btheta$:
 
 Define
 \begin{align}
-M_{kl} &\;\equiv\; \int w(r)\, r^k r^l\, dr \;=\; \int \rho_\Delta(r) \sigma_1(r)\, r^{k+l}\, dr, \label{eq:Mkl}\\
+M_{kl} &\;\equiv\; \int w(r)\, r^k r^l\, dr \;=\; \int \rho_\Delta(r) \sigma(r)\, r^{k+l}\, dr, \label{eq:Mkl}\\
 b_k &\;\equiv\; \int w(r) g(r)\, r^k\, dr.\label{eq:bk}
 \end{align}
-Crucially, $\sigma_1(r) g(r) = 1$, so the bias vector simplifies:
+Crucially, $\sigma(r) g(r) = 1$, so the bias vector simplifies:
 \begin{equation}
 b_k \;=\; \int \rho_\Delta(r)\, r^k\, dr.
 \label{eq:bk_simple}
@@ -290,20 +291,20 @@ Place $r_c = 0$. Define a matching scale $r_*$ of order unity that separates inn
 
 \subsection{Inner-region contributions}
 
-Assume $k + l$ even (only nonvanishing cases). The inner contribution to $M_{kl}$ is
+Assume $k + l$ even (only nonvanishing cases). The inner region contribution to $M_{kl}$ (eqn.\ref{eq:Mkl}) is
 \begin{align}
 M_{kl}^{\text{in}}(\Delta) &\;=\; \int_{\Delta/2 < |r| < r_*} \rho_0(r) \sigma_1(r)\, r^{k+l}\, dr \nonumber\\
-&\;\approx\; 2 \rho_0\, \int_{\Delta/2}^{r_*} r^{-\nu}\, r^{k+l}\, dr \nonumber\\
-&\;=\; \frac{2\rho_0}{k+l - \nu + 1}\,\Big[r_*^{k+l-\nu+1} - (\Delta/2)^{k+l-\nu+1}\Big].
+&\;\approx\; 2 \rho_0\, \int_{\Delta/2}^{r_*} \Big[\frac{1 + r^{\nu}}{r^{\nu}}\Big]\, r^{k+l}\, dr \nonumber\\
+&\;=\; \frac{2\rho_0}{k+l - \nu + 1}\,\Big[r_*^{k+l-\nu+1} - (\Delta/2)^{k+l-\nu+1}\Big] + \frac{2\rho_0}{1+k+l}\,\Big[ r_*^{k+l+1} - (\Delta/2)^{k+l+1}\Big]
 \label{eq:Mkl_inner}
 \end{align}
-For $\nu < 1$ (Feigenbaum case) and $k + l \geq 0$ even, the exponent $k+l - \nu + 1 > 0$, so the integral is finite as $\Delta \to 0$ and the $\Delta$-dependence enters as
+For $\nu < 1$ \sout{(Feigenbaum case)} and $k + l \geq 0$ even, the exponent $k+l - \nu + 1 > 0$, so the integral is finite as $\Delta \to 0$ and the $\Delta$-dependence enters as
 \begin{equation}
-M_{kl}^{\text{in}}(\Delta) \;=\; M_{kl}^{\text{in}}(0) \;-\; \frac{2\rho_0}{k+l-\nu+1}\,(\Delta/2)^{k+l-\nu+1}.
+M_{kl}^{\text{in}}(\Delta) \;=\; M_{kl}^{\text{in}}(0) \;-\; \frac{2\rho_0}{k+l-\nu+1}\,(\Delta/2)^{k+l-\nu+1} \;-\; \frac{2\rho_0}{k+l+1}(\Delta/2)^{k+l+1}
 \label{eq:Mkl_corr}
 \end{equation}
 
-Similarly,
+Similarly for eqn.\ref{eq:bk_simple} the inner contribution is,
 \begin{align}
 b_k^{\text{in}}(\Delta) &\;=\; \int_{\Delta/2 < |r| < r_*} \rho_0(r)\, r^k\, dr \nonumber\\
 &\;\approx\; \frac{2\rho_0}{k+1}\,\Big[r_*^{k+1} - (\Delta/2)^{k+1}\Big].
@@ -312,35 +313,75 @@ b_k^{\text{in}}(\Delta) &\;=\; \int_{\Delta/2 < |r| < r_*} \rho_0(r)\, r^k\, dr 
 
 \subsection{Outer-region contributions}
 
-For the outer region, $\sigma_1(r) \to 1$, $g(r) \to 1$, $w(r) \to \rho_0$:
+For the outer region, $\sigma_1(r) \to 1$, $g(r) \to 1$, $w(r) \to \rho_0$. So the outer region contributions for \eqref{eq:Mkl} and \eqref{eq:bk_simple} are:
 \begin{equation}
 M_{kl}^{\text{out}} \;\approx\; \rho_0 \int_{r_* < |r| < L} r^{k+l}\, dr, \qquad b_k^{\text{out}} \;\approx\; \rho_0 \int_{r_* < |r| < L} r^k\, dr.
-\label{eq:outer}
+\label{eq:outer_corr}
 \end{equation}
 \sgp{Cite other equations and figures as much as possible.} Both are $\Delta$-independent at this level of approximation.
 
-\subsection{Expansion of \texorpdfstring{$\bhattheta(\Delta)$}{theta hat(Delta)}}
-
-Combining,
+\subsection{Consolidated scaling of M and b}
+Taking into account how $M$ and $\bvec$ scale in the inner and outer regions as derived in \eqref{eq:Mkl_corr}, \eqref{eq:bk_inner} and \eqref{eq:outer_corr}, the scaling of $M$ and $\bvec$ in leading and subleading order of $\Delta$ can be arrived as:
+\begin{equation}
+    M(\Delta) = M^{(0)} + \Delta^{1-\nu}M^{(1)} + O(\Delta)
+    \label{eq:M_expansion}
+\end{equation}
+and 
+\begin{equation}
+    \bvec(\Delta) = \bvec^{(0)} + \Delta \bvec^{(1)} + O(\Delta^2)
+    \label{eq:b_expansion}
+\end{equation}
+where $M^{(0)}, M^{(1)}, \mathbf{b}^{(0)}, \mathbf{b}^{(1)}$ are $\Delta$-independent. The corrections in $M$ scale as $\Delta^{1-\nu}$ because the leading inner integrand $\sim r^{-\nu}$ near the gap edge integrates to give a power of the gap that is one greater (boundary contribution). The corrections in $\mathbf{b}$ scale as $\Delta$ because the integrand is regular ($\sim r^0$).\\
+We can write down the leading and sub-leading order of $M$ and $\bvec$ in matrix form for more clarity:
+\smallskip
 \begin{align}
-M(\Delta) &\;=\; M_0 \;+\; \Delta^{1-\nu} M_1 \;+\; O(\Delta^{3-\nu}), \label{eq:M_expansion}\\
-\mathbf{b}(\Delta) &\;=\; \mathbf{b}_0 \;+\; \Delta\, \mathbf{b}_1 \;+\; O(\Delta^3), \label{eq:b_expansion}
+    M-M^{(0)} =& \begin{pmatrix}
+            M_{00} - M^{(0)}_{00} & M_{01}-M^{(0)}_{01} & \cdots & M_{0\,K-1}- M^{(0)}_{0\,K-1} \\
+            M_{10} & M_{11} & \cdots & M_{1\,K-1} \\
+            \vdots & \vdots & \vdots & \vdots \\
+            M_{K0} & \cdots & \cdots & M_{K-1\,K-1}
+    \end{pmatrix} \nonumber \\
+     &\sim \begin{pmatrix}
+         O(\Delta^{1-\nu}) & O(\Delta) &\cdots & O(\Delta^{K-\nu})\\
+         O(\Delta) & O(\Delta^{3-\nu}) & \cdots  & \cdots \\
+         \vdots & \vdots & \vdots & \vdots \\
+         O(\Delta^{K+1-\nu}) & \cdots & \cdots & O(\Delta^{2K-1-\nu})
+     \end{pmatrix}
 \end{align}
-where $M_0, M_1, \mathbf{b}_0, \mathbf{b}_1$ are $\Delta$-independent. The corrections in $M$ scale as $\Delta^{1-\nu}$ because the leading inner integrand $\sim r^{-\nu}$ near the gap edge integrates to give a power of the gap that is one greater (boundary contribution). The corrections in $\mathbf{b}$ scale as $\Delta$ because the integrand is regular ($\sim r^0$).
+\smallskip
+and
+\smallskip
+\begin{equation}
+    \bvec-\bvec^{(0)} = \begin{pmatrix}
+        b_0 - b^{(0)}_0\\
+        b_1 - b^{(0)}_1\\
+        \vdots\\
+        b_{K-1} - b^{(0)}_{K-1}
+    \end{pmatrix}
+    \sim
+    \begin{pmatrix}
+        O(\Delta)\\
+        O(\Delta^2)\\
+        \vdots \\
+        O(\Delta^K)
+    \end{pmatrix}
+\end{equation}
 
-Hence
+\subsection{Expansion of \texorpdfstring{$\bhattheta(\Delta)$}{theta hat(Delta)}}
+Since $$\hat\btheta(\Delta) = M^{-1}\bvec,$$ then using \eqref{eq:M_expansion} and \eqref{eq:b_expansion} we have,
 \begin{align}
 \bhattheta(\Delta) &\;=\; M(\Delta)^{-1} \mathbf{b}(\Delta) \nonumber\\
-&\;=\; \big(M_0 + \Delta^{1-\nu} M_1 + \cdots\big)^{-1} \big(\mathbf{b}_0 + \Delta\, \mathbf{b}_1 + \cdots\big) \nonumber\\
-&\;=\; M_0^{-1}\mathbf{b}_0 \;+\; \Delta^{1-\nu}\,\Big[-M_0^{-1} M_1 M_0^{-1}\mathbf{b}_0\Big] \;+\; O(\Delta).
+&\;=\; \big(M^{(0)} + \Delta^{1-\nu} M^{(1)} + \cdots\big)^{-1} \big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
+&\;=\; \Big( M^{(0)}( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]) \Big)^{-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
+&\;=\; M^{(0)-1}\mathbf{b}^{(0)} \;+\; \Delta^{1-\nu}\,\Big[-M^{(0)-1} M^{(1)} M^{(0)-1}\mathbf{b}^{(0)}\Big] \;+\; O(\Delta).
 \label{eq:theta_expansion}
 \end{align}
 So
 \begin{equation}
-\hat{\theta}_0(\Delta) \;=\; \hat{\theta}_0^{(0)} \;+\; c_1\, \Delta^{1-\nu} \;+\; O(\Delta),
+\bhattheta(\Delta) \;=\; \bhattheta^{(0)} \;+\; c_1\, \Delta^{1-\nu} \;+\; O(\Delta),
 \label{eq:theta0_expansion}
 \end{equation}
-where $\hat{\theta}_0^{(0)} = \bhattheta^{(0)}_0$ is the limiting value at $\Delta \to 0$, with $\bhattheta^{(0)} = M_0^{-1}\mathbf{b}_0$.
+where $\bhattheta^{(0)}$ is the limiting value at $\Delta \to 0$, with $\bhattheta^{(0)} = M^{(0)-1}\bvec^{(0)}$.
 
 %\subsection{Two regimes: approximation-limited vs.\ gap-limited}
 %
