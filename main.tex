@@ -337,10 +337,10 @@ We can write down the leading and sub-leading order of $M$ and $\bvec$ in matrix
 \begin{align}
     M-M^{(0)} =& \begin{pmatrix}
             M_{00} - M^{(0)}_{00} & M_{01}-M^{(0)}_{01} & \cdots & M_{0\,K-1}- M^{(0)}_{0\,K-1} \\
-            M_{10} & M_{11} & \cdots & M_{1\,K-1} \\
+            M_{10} - M^{(0)}_{10} & M_{11}- M^{(0)}_{11} & \cdots & M_{1\,K-1} - M^{(0)}_{1\,K-1} \\
             \vdots & \vdots & \vdots & \vdots \\
-            M_{K0} & \cdots & \cdots & M_{K-1\,K-1}
-    \end{pmatrix} \nonumber \\
+            M_{K0}-M^{(0)}_{K0} & \cdots & \cdots & M_{K-1\,K-1} - M^{(0)}_{K-1\,K-1}
+    \end{pmatrix} \nonumber \\ \nonumber \\
      &\sim \begin{pmatrix}
          O(\Delta^{1-\nu}) & O(\Delta) &\cdots & O(\Delta^{K-\nu})\\
          O(\Delta) & O(\Delta^{3-\nu}) & \cdots  & \cdots \\
@@ -372,7 +372,8 @@ Since $$\hat\btheta(\Delta) = M^{-1}\bvec,$$ then using \eqref{eq:M_expansion} a
 \begin{align}
 \bhattheta(\Delta) &\;=\; M(\Delta)^{-1} \mathbf{b}(\Delta) \nonumber\\
 &\;=\; \big(M^{(0)} + \Delta^{1-\nu} M^{(1)} + \cdots\big)^{-1} \big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
-&\;=\; \Big( M^{(0)}( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]) \Big)^{-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
+&\;=\; \Big( M^{(0)}\Big( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]\Big)\Big)^{-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
+&\;=\; \Big( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]\Big)^{-1}M^{(0)-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
 &\;=\; M^{(0)-1}\mathbf{b}^{(0)} \;+\; \Delta^{1-\nu}\,\Big[-M^{(0)-1} M^{(1)} M^{(0)-1}\mathbf{b}^{(0)}\Big] \;+\; O(\Delta).
 \label{eq:theta_expansion}
 \end{align}
