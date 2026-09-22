@@ -14,6 +14,7 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage[most]{tcolorbox}
+\usepackage{setspace}
 \usepackage{graphicx} % Required for inserting images
 \allowdisplaybreaks 
 
@@ -52,12 +53,27 @@
 \newcommand{\indicator}{\mathbf{1}}
 \newcommand{\rmd}{\textrm{d}}
 \newcommand{\del}{\delta}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Th}{{\btheta}}
 
 \newcommand{\meanr}[1]{\E_{r \sim \rho_\Delta}\!\left[#1\right]}
 \newcommand{\meanx}[1]{\E_{\bx \mid r}\!\left[#1\right]}
 
 % Highlight box for key results
-\newtcolorbox{keybox}[1][]{colback=blue!5!white, colframe=blue!50!black, sharp corners, boxrule=0.5pt, #1}
+\newtcolorbox{keybox}[1][]{colback=gray!25, colframe=gray!25, sharp corners, boxrule=0.5pt, #1}
+
+\newtcolorbox{entetebox}[1]{
+  enhanced,
+  colframe=gray!45,
+  colback=gray!10,
+  fonttitle=\upshape\bfseries,
+  title={\textcolor{black}{#1}},
+  boxrule=0.4pt,
+  arc=4mm,
+  attach title to upper={\par}
+}
+
+
 \def\sgp#1{{\sf\textcolor{red}{#1}}}
 \def\ant#1{{\sf\textcolor{blue}{#1}}}
 \title{\textbf{Generalization near a bifurcation point}}
@@ -68,63 +84,72 @@
 
 \maketitle
 
-\sgp{Science, Structure, Details, Tone -- pedagogical, Figures -- CCC, Formatting}
+\begin{onehalfspace}
 
 \section{Introduction}\label{sec:Intro}
-Understanding how generative models generalize near critical phenomena—such as bifurcations, phase transitions, and scale-invariant fluctuations—is a central challenge in machine learning for the physical sciences. In critical regimes, system dynamics are marked by diverging variance and persistent temporal memory (critical slowing down). This study evaluates the theoretical capacity of deep neural networks—specifically score-based generative models—to learn and generalize near critical points when trained exclusively using off-critical data.
-\section{Linear Toy Model}
+One of the successes of modern generative models is due to the generalization capability of the model \sgp{find \& cite different famous papers} described as the model's ability to accurately predict the solution to problems not in the training dataset. Although this capability is the selling point of several of the foundational models, the mechanism behind this generalization is less understood. Our goal in this work is to investigate this question in a toy setting where we look at the prediction error of the neural network in parameters not in the training dataset. We consider dynamical systems that follow the normal form of pitchfork, transcritical and Hopf bifurcation wherein the state variable undergoes a transition upon variation of the system parameter. The model is trained on data away from the critical point and the task it is intended to perform is to predict the point of transition. Besides these normal forms, we also test the generalization capabilities in a chaotic system such as the logistic map.
+
+We look at the normal form of dynamical systems as we know from the critical phenomena literature that system dynamics have to follow this form close to phase transition and the behaviour is marked by diverging variance and persistent temporal memory (critical slowdown). Such a setting pushes the limit of generalization, as one would expect the generalization to be limited by the storage capacity, duration of training, and the availability of training data. We capture these exact intuitions by further abstracting the training process of a diffusion model as the minimization of the score of a neural network approximated by a polynomial expansion and the data sampled from normal distribution with diverging covariance. Under such a phrasing, we derive analytical results assuming a fixed number of `neurons' of the architecture for: (a) infinite data; (b) finite data, (c) finite noisy data. We predict \sgp{continue}
+
+This study evaluates the theoretical capacity of deep neural networks—specifically score-based generative models—to learn and generalize near critical points when trained exclusively using off-critical data.
+
+\section{Diffusion model}
+\subsection{Architecture, data generation}
+\subsection{Training process}
+\subsection{Predictions}
+
+\section{Gaussian theory of generalization}
 \label{sec:toy}
 
-\subsection{Data-generating process}\label{subsec:generation}
+In this section we develop the analytical framework useful in understanding the generalization capabilities of the neural network, described as a polynomial $\phi_k(r)$ of $\mathcal{O}(r^k)$. The neural network is parameterised by coefficients $A_{\Th}$ with $r$ being the tuning/bifurcation parameter. We abstract the learning process close to the critical point $r_c$ by assuming a fixed order of expansion $(K-1)$ of the polynomial with training data points of $\mathcal{O}(P)$. Under such constrained setting, we study the learning process in three different conditions: (a) when $\alpha = P/K \rightarrow + \infty$, corresponding to large data availability; (b) when $\alpha = \mathcal{O}(1)$, corresponding to limited data; (c) when the limited data is corrupted by noise, $\eta_i$. \sgp{this can be expanded and made more clear...}
 
-% \sout{Let $r \in \R$ be a one-dimensional control parameter. We model a bifurcation at $r = r_c$ by introducing a conditional Gaussian distribution whose covariance becomes singular in one direction as $r \to r_c$.}Let $r \in \mathbb{R}^d$ denote a continuous state or control variable. We model a critical regime near a boundary or threshold $r_c$ by introducing a state-dependent covariance kernel whose spectrum contains a singular or power-law divergent component as $r \to r_c$. While such singular structures naturally emerge near dynamical bifurcations (via critical slowing down and spatial soft modes), this statistical formulation broadly encompasses any critical phenomenon characterized by scale-invariant fluctuations, manifold edge singularities, or ill-conditioned sampling measures.
+Further, the simplified theoretical model developed here works on the following assumptions:
+\begin{itemize}
+    \item The dynamical data used to train the neural network is assumed to be sampled from a normal distribution, $\N \left(\mathbf{0},\, \Sigma(r)\right)$, where $r$ is the tuning parameter in the system or the context, as described in the previous section.
+    \item The correlation function of the normal distribution is assumed to diverge only along one direction and takes the form:
+    \begin{equation}\label{eq:corr_matrix}
+        \Sigma(r) \;=\; I_d + \frac{1}{|r-r_c|^{\nu}} \, \be_1 \be_1^\top,
+    \end{equation}
+    where $r_c$ is the critical value of the tuning parameter, $r$ and $\nu$ is the exponent of divergence. \sgp{expand on the definition of $\be_1$...}
+    \item The neural network, described by its parameters $\Th$, is assumed to be a degree-$(K-1)$ polynomial in $r$ in some basis $\{\phi_k(r)\}_{k=0}^{K-1}$ with coefficients $A_{\Th}$.
+    \item \sgp{add about the assumptions about the noise}
+\end{itemize}
 
-\paragraph{Conditional distribution.} For each $r$, samples $\bx \in \R^d$ are drawn from
+\subsection{Generating data}\label{subsec:generation}
+As described above, we approximate the distribution of the data $\bx \in \R^d$ for each value of the bifurcation parameter $r$, as drawn from a normal distribution with covariance $\Sigma(r) \in \R^{d \times d}$,
 \begin{equation}
 \bx \mid r \;\sim\; \mathcal{N}\!\left(\mathbf{0},\, \Sigma(r)\right).
 \label{eq:cond_dist}
 \end{equation}
-
-\paragraph{Critical covariance.} Let $\Sigma(r)$ be the covariance of the distribution given in \eqref{eq:cond_dist}.\\
-Since the covariance has a symmetric positive semi-definite structure it has an eigen decomposition as follows,
+Since we are interested in data that exhibit divergence, approximating the behaviour near the critical point, we assume $\Sigma(r)$ in \eqref{eq:cond_dist} to be a symmetric positive semi-definite matrix with eigen decomposition given by
 \begin{equation}\label{eq:eigenForm}
-    \Sigma(r) = Q(r)\Lambda(r)Q(r)^T, \qquad  \Lambda(r) = \diag(\lambda_1(r),\cdots,\lambda_d(r))
+    \Sigma(r) = Q(r)\Lambda(r)Q(r)^T, \qquad  \Lambda(r) = \diag(\lambda_1(r),\cdots,\lambda_d(r)).
 \end{equation}
-where the orthonormal columns of $Q(r) = [\be_1(r), \be_2(r),\ldots, \be_d(r)]$ define the \textbf{principal fluctuation directions(eigenvectors)} in state space $\mathbb{R}^d$, and $\lambda_k(r)$ represents the variance along direction $\be_k(r)$.
+Here the orthonormal columns of $Q(r) = [\be_1(r), \be_2(r),\ldots, \be_d(r)]$ define the \emph{principal fluctuation directions} (eigenvectors) in state space, and $\lambda_k(r)$ represents the variance along the direction $\be_k(r)$.
 
-\paragraph{Diverging critical mode.} Near the \sout{bifurcation} critical point $r_c$, the system undergoes critical fluctuations where variance along the primary Order Parameter mode--- the critical direction $\be_1(r)$---diverges, while fluctuations along all transverse modes $\be_{k\geq 2}$ remain bounded.\\
-Mathematically, as $r\to r_c$:
-\begin{equation*}
-    \lambda_1(r)\sim |r - r_c|^{-\nu},
-\end{equation*}
-while the other eigenvalues remain bounded:
-\begin{equation*}
-    \lambda_k(r)=O(1),\qquad k=2,\cdots,d.
-\end{equation*}
-Here, "direction" refers specifically to the principal eigenvector $\be_1$ corresponding to the dominant eigenvalue $\lambda_1(r)$. Along this eigenvector, variance grows parametrically faster than in any orthogonal subspace:
-\begin{equation*}
-\dfrac{\lambda_k(r)}{\lambda_1(r)}\to 0 \qquad (k \geq 2)
-\end{equation*}
-One direction exhibits parametrically faster growth of variance than the others.\\
+Near the critical point $r_c$, we assume that the system undergoes fluctuations whose correlation diverges only along the one direction $\be_1(r)$, while fluctuations along all transverse modes $\be_{k\geq 2}$ remain bounded. Mathematically, as $r\to r_c, \lambda_1(r)\sim |r - r_c|^{-\nu}$ and $\lambda_k(r)=O(1)\ \forall\ k \neq 1$. Here, direction refers specifically to the orientation of the principal eigenvector $\be_1$ corresponding to the dominant eigenvalue $\lambda_1(r)$. Along this eigenvector, variance grows parametrically faster than in any other orthogonal direction:
+\[
+\dfrac{\lambda_k(r)}{\lambda_1(r)}\to 0 \qquad (k \geq 2).
+\]
+In order to simplify the algebra, without loss of generality, we choose our coordinate basis such that the critical direction coincides with the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Therefore the covariance matrix simplifies to,
+\begin{equation}\label{eq:corr_matrix}
+\Sigma(r) \;=\; I_d + \frac{1}{|r-r_c|^{\nu}} \, \be_1 \be_1^\top,
+\end{equation}
+with $\nu > 0$ being the critical exponent. The eigenvalues of $\Sigma(r)$ are
+\[
+\sigma_1(r) \;=\; 1 + |r-r_c|^{-\nu}, \qquad \sigma_k(r) = 1 \quad (k=2,\ldots,d).
+\]
+The critical exponent $\nu > 0$ governs the power-law with which the variance diverges along the dominant direction, playing an analogous role to the critical susceptibility exponent ($\gamma$) in continuous phase transitions or soft-mode instabilities in dynamical systems.
+
 \begin{figure}[h]
      \centering 
      \includegraphics{figures/fig1_langevin_derived_covariance.pdf}
      \label{fig:illustration1}
      \caption{$\mathbf{(a)}$ \textbf{Dynamical origin of spatial anisotropy.} Steady-state sample distributions in state space generated by the multidimensional Langevin process $dx(t) = -\nabla_x V(x, r) \, dt + \sqrt{2D} \, dW(t)$ off-criticality ($r = 0.50$, left) and near-criticality ($r = 0.005$, right). As the control parameter $r \to r_c$, the restoring force along the critical mode vanishes ($\mu_1(r) \to 0$), driving anisotropic fluctuation growth and severe elongation along the soft mode direction $e_1$, while fluctuations along the transverse direction $e_2$ remain tightly bounded. Shaded regions depict the $2\sigma$ spatial covariance ellipses. $\mathbf{(b)}$ \textbf{Empirical covariance spectrum.} Eigenvalues of the empirical covariance matrix $\Sigma$ plotted against the distance to criticality $\vert{}r - r_c\vert{}$. The dominant eigenvalue $\lambda_1(r)$ diverges as $D / \mu_1(r) \sim \vert{}r - r_c\vert{}^{-\nu}$ (with $\nu = 0.50$), whereas transverse eigenvalues $\lambda_{k \ge 2}$ remain stationary ($D / \mu_0 = O(1)$), confirming the dynamical emergence of a low-dimensional critical manifold.}
 \end{figure}
-Without loss of generality, we choose our coordinate basis such that the critical direction coincides with the first canonical basis vector $\be_1 = (1, 0, \ldots, 0)^\top$. Therefore the covariance matrix simplifies to,
-\begin{equation}\label{eq:corr_matrix}
-\Sigma(r) \;=\; I_d + \frac{1}{|r-r_c|^{\nu}} \, \be_1 \be_1^\top,
-\end{equation}
-where $\nu > 0$ is the critical exponent. The eigenvalues of $\Sigma(r)$ are
-\[
-\sigma_1(r) \;=\; 1 + |r-r_c|^{-\nu}, \qquad \sigma_k(r) = 1 \quad (k=2,\ldots,d).
-\]
-As $r \to r_c$, the variance along $\be_1$ diverges as $|r-r_c|^{-\nu}$, mimicking the diverging fluctuations near a critical point. The critical exponent $\nu > 0$ governs the power-law divergence of variance along the order parameter mode, playing an analogous role to critical susceptibility exponents ($\gamma$) in continuous phase transitions or soft-mode instabilities in dynamical systems.
 
 \subsection{True score function}
-
-The score of a Gaussian $\mathcal{N}(\mathbf{0}, \Sigma)$ is computed by direct differentiation of its log-density. The density is
+Before we look at the loss function used to capture the data, we describe the score of a distribution. The score $s(\bx)\;\equiv\; \nabla_\bx \log p(\bx)$ of a distribution captures the shape of the distribution in the scaled coordinate independent form using the gradient with respect to the random variable. For a Gaussian random variable, $\mathcal{N}(\mathbf{0}, \Sigma)$ this can be computed by direct differentiation of its log-density. The density is
 \[
 p(\bx) \;=\; \frac{1}{(2\pi)^{d/2} \det(\Sigma)^{1/2}} \exp\!\left(-\tfrac{1}{2}\bx^\top \Sigma^{-1} \bx\right),
 \]
@@ -139,36 +164,41 @@ For our problem,
 s^*(\bx, r) \;\equiv\; \nabla_\bx \log p(\bx \mid r) \;=\; -\Sigma(r)^{-1} \bx.
 \label{eq:true_score}
 \end{equation}
-This inverse can be calculated and we get
+The inverse of the variance can be easily evaluated and we get
 \begin{equation}
-\Sigma(r)^{-1} \;=\; I_d \,+\, \left(\frac{1}{\sigma_1(r)} - 1\right) \be_1 \be_1^\top.
+\Sigma(r)^{-1} \;=\; I_d \,+\, \left(\frac{1}{\sigma_1(r)} - 1\right) \be_1 \be_1^\top,
 \label{eq:Sigma_inv}
 \end{equation}
-\textbf{Critical direction:} $1/\sigma_1(r) = |r-r_c|^\nu/(1 + |r-r_c|^\nu) \to 0$ as $r \to r_c$, so the score component along $\be_1$ vanishes at the bifurcation. \textbf{Non-critical directions:} the score is simply $-x_k$ for $k \geq 2$.
+where $I_d$ is the identity matrix and $\sigma_1(r)$ is the reduced one-dimensional variance.\\
+\noindent \textit{Along critical direction:} $1/\sigma_1(r) = |r-r_c|^\nu/(1 + |r-r_c|^\nu) \to 0$ as $r \to r_c$, so the score component along $\be_1$ vanishes at the bifurcation.\\
+\noindent \textit{Along non-critical directions:} the score is simply $-x_k$ for $k \geq 2$.
+
+\subsection{Excising data}
+\sgp{Describe the excising data part here}
 
 \section{Student model and loss function}\label{sec:student_and_loss}
 
-\subsection{Teacher-Student Framework}\label{subsec:teacher_student}
+\subsection{Teacher-Student framework}\label{subsec:teacher_student}
 The Teacher-Student framework is a classic analytical paradigm used to study learning, generalization, and structural inference in neural networks. In this framework, data generation and learning are divided into two distinct components:
 \begin{itemize}
-    \item \textbf{The Teacher Model:}A generative mechanism or target mapping $p(x\vert{}\theta^*)$ parameterized by ground-truth latent variables or weights $\theta^*$. The teacher defines the underlying data-generating distribution and dictates the true conditional statistics or scores of the system.
-    \item \textbf{The Student Model:}An approximating neural network or estimator $s_\theta(x)$ parameterized by trainable weights $\theta$. The student receives finite or domain-restricted samples generated by the teacher and optimizes a task-specific loss function (such as mean squared error or score matching) to reconstruct the teacher's internal structure or predictive output.
+    \item \textbf{The Teacher Model:} A generative mechanism or target mapping $p(\bx \ \vert \ \theta^*)$ parameterized by latent ground-truth variables or weights $\theta^*$. The teacher defines the underlying data-generating distribution and dictates the true conditional statistics or scores of the system.
+    \item \textbf{The Student Model:} An approximating neural network or estimator $s_\theta(\bx)$ parameterized by trainable weights $\theta$. The student receives finite or domain-restricted samples generated by the teacher and optimizes a task-specific loss function (such as mean squared error or score matching) to reconstruct the teacher's internal structure or predictive output.
 \end{itemize}   
  By assuming an explicit teacher model, the theoretical performance of the student can be evaluated against the true data-generating process rather than empirical test sets alone. This framework is crucial to analyze how structural constraints on training data, such as domain gaps, missing features and finite sample sizes, impact the student's parameter convergence and overall performance. With this as motivation we adopt the following appropriate student model for our problem.
 
 \subsection{Linear student model}
-Assuming \eqref{eq:cond_dist} as the implicit teacher, we adopt a linear-in-$\bx$ student with general $r$-dependence:
+In our analysis, we assume the data generated using the normal distribution in \eqref{eq:cond_dist} as the implicit teacher and we adopt a linear-in-$\bx$ student with general $r$--dependence:
 \begin{equation}
-s_{\btheta}(\bx, r) \;=\; -A(r) \bx, \qquad A(r) \in \R^{d \times d}.
+s_{\btheta}(\bx, r) \;=\; -A_{\Th}(r) \bx, \qquad A(r) \in \R^{d \times d}.
 \label{eq:student}
 \end{equation}
-We parameterize $A(r)$ as a degree-$(K-1)$ polynomial in $r$ in some basis $\{\phi_k(r)\}_{k=0}^{K-1}$ (monomials, Chebyshev, Legendre --- the choice does not affect the result). While any complete polynomial basis spans the same finite-dimensional function space $\mathbb{P}_{K-1}$ at the exact theoretical limit ($P \to \infty$), using orthogonal polynomials ensures well-conditioned normal matrices and rapid spectral convergence during optimization, avoiding the severe ill-conditioning associated with standard monomial bases. For concreteness:
+We parameterize $A_\Th(r)$ as a degree-$(K-1)$ polynomial in $r$ in some basis $\{\phi_k(r)\}_{k=0}^{K-1}$ (monomials, Chebyshev, Legendre --- the choice does not affect the result). Such an expansion is founded on the assumption that the neural network behaves as an universal function approximator. While any complete polynomial basis capturing the behaviour of the neural network spans the same finite-dimensional function space $\mathbb{P}_{K-1}$ at the exact theoretical limit ($P \to \infty$), using orthogonal polynomials ensures well-conditioned normal matrices and rapid spectral convergence during optimization, avoiding the severe ill-conditioning associated with standard monomial bases. For concreteness, we can write the weight dependent coefficient as:
 \[
-A(r) \;=\; \sum_{k=0}^{K-1} A_k\, \phi_k(r), \qquad \phi_k(r) = r^k.
+A_\Th(r) \;=\; \sum_{k=0}^{K-1} A_k(\Th)\, \phi_k(r), \qquad \phi_k(r) = r^k.
 \]
-The trainable parameters are the $K$ matrices $\{A_k\}$, totaling $Kd^2$ scalar parameters.
+The trainable parameters are the $K$ matrices $\{A_k\}$, totaling $Kd^2$ scalar parameters \sgp{this is hard to visualize as matrices, maybe worth expanding this a bit}.
 
-The (population) score-matching loss is \sgp{add a small schematic}
+\noindent Using this approximation of the neural network, we can now define the score-matching loss as:
 \begin{equation}
 \mathcal{L}(\btheta) \;=\; \meanr{\meanx{ \big\| s_{\btheta}(\bx, r) - s^*(\bx, r) \big\|^2 }},
 \label{eq:loss_pop}
@@ -180,89 +210,85 @@ where the training distribution over $r$ has the gap excised:
 \end{equation}
 with $\rho_0$ a base distribution (we take uniform on $[r_c - L, r_c + L]$) and $Z_\Delta$ the normalization.
 
-Let $B(r) \equiv A(r) - \Sigma(r)^{-1}$. Then
+\noindent For clarity, let us define $B(r) \equiv A_\Th(r) - \Sigma(r)^{-1}$, then the loss density can be written as:
 \[
 \big\| s_{\btheta}(\bx, r) - s^*(\bx, r) \big\|^2 \;=\; \big\| B(r) \bx \big\|^2 \;=\; \bx^\top B(r)^\top B(r) \bx.
 \]
-For any deterministic symmetric matrix $M$, the standard identity for a centered Gaussian $\bx \sim \mathcal{N}(0, \Sigma)$ is $\E[\bx^\top M \bx] = \Tr(M \Sigma)$. Hence
+For any deterministic symmetric matrix $M$, the standard identity for a centered Gaussian $\bx \sim \mathcal{N}(0, \Sigma)$ is $\E[\bx^\top M \bx] = \Tr(M \Sigma)$. Hence,
 \[
 \meanx{\| s_{\btheta} - s^*\|^2} \;=\; \Tr\!\big(B(r)^\top B(r) \Sigma(r)\big) \;=\; \Tr\!\big(B(r) \Sigma(r) B(r)^\top\big).
 \]
-So the loss becomes
+Thus the loss simplies to:
 \begin{equation}
-\mathcal{L}(\btheta) \;=\; \int \rho_\Delta(r)\, \Tr\!\Big[\big(A(r) - \Sigma(r)^{-1}\big)\, \Sigma(r)\, \big(A(r) - \Sigma(r)^{-1}\big)^\top \Big]\, \rmd r.
+\mathcal{L}(\btheta) \;=\; \int \rho_\Delta(r)\, \Tr\!\Big[\big(A_\Th(r) - \Sigma(r)^{-1}\big)\, \Sigma(r)\, \big(A_\Th(r) - \Sigma(r)^{-1}\big)^\top \Big]\, \rmd r.
 \label{eq:loss_explicit}
 \end{equation}
 
 \subsection{Decoupling the dimensions}
 
-We now exploit the diagonal structure of $\Sigma(r)$. In the canonical basis,
-\begin{equation}
-\Sigma(r) = \diag(\sigma_1(r), 1, 1, \ldots, 1).
-\end{equation}
-Which means 
-\begin{equation}
-    \Sigma(r)^{-1} = \diag\big( \frac{1}{\sigma(r)},1,1, \ldots,1 \big)
-\end{equation}
-The cost \eqref{eq:loss_explicit} can be expanded in matrix entries to give 
-
-\begin{align}
-    \mathcal{L}(\btheta) & \;=\;  \int \rho_\Delta(r)\, \Tr\!\Big[\big(A(r) - \Sigma(r)^{-1}\big)\, \Sigma(r)\, \big(A(r) - \Sigma(r)^{-1}\big)^\top \Big]\, \rmd r \nonumber \\    
-                        & \;=\; \sum_{i=1}^{d}\sum_{j=1}^{d} \big(A_{ij}(r) - \Sigma_{ij}^{-1}(r)\big)^{2} \Sigma_{jj}(r) \label{eq:expanded_loss}
-\end{align}
-
-Because $\Sigma(r)^{-1}$ has no off-diagonal entries ($\Sigma_{ij}^{-1}$ = 0 for $i\neq j$), any off-diagonal parameter $A_{ij}(i\neq j)$ contributes a non-negative term $A_{ij}(r)^2\sigma(r)\geq 0$ to the loss. Since $A_{ij}$ does not interact with any target diagonal terms, setting all off-diagonal components strictly to zero ($A_{ij}\equiv 0$ for $i\neq j$) globally minimizes the loss without constraining the diagonal fit. Writing $A(r) = \diag(a_1(r), a_2(r), \ldots, a_d(r))$ with each $a_k(r)$ a degree-$(K-1)$ polynomial, the trace splits as
+We further exploit the diagonal structure of $\Sigma(r)$ to represent the loss along the different directions $\be_k$ described in \sgp{eqn. number}. In the canonical basis,
 \[
-\Tr[\cdots] \;=\; \sum_{k=1}^d \big(a_k(r) - 1/\sigma_k(r)\big)^2 \sigma_k(r).
+\Sigma(r) = \diag(\sigma_1(r), 1, 1, \ldots, 1).
 \]
-This reduces the matrix trace to a sum of d independent scalar loss functions:
+This implies 
+\[
+    \Sigma(r)^{-1} = \diag\bigg( \frac{1}{\sigma(r)},1,1, \ldots,1 \bigg).
+\]
+The loss density \eqref{eq:loss_explicit} can be expanded in matrix entries to give 
+\begin{align}
+    \mathcal{L}(\btheta) & \;=\;  \int \rho_\Delta(r)\, \Tr\!\Big[\big(A_\Th(r) - \Sigma(r)^{-1}\big)\, \Sigma(r)\, \big(A_\Th(r) - \Sigma(r)^{-1}\big)^\top \Big]\, \rmd r \nonumber \\    
+                        & \;=\; \sum_{i=1}^{d}\sum_{j=1}^{d} \big(A^\Th_{ij}(r) - \Sigma_{ij}^{-1}(r)\big)^{2} \Sigma_{jj}(r) \label{eq:expanded_loss}
+\end{align}
+Because $\Sigma(r)^{-1}$ has no off-diagonal entries ($\Sigma_{ij}^{-1}$ = 0 for $i\neq j$), any off-diagonal parameter $A^\Th_{ij}(i\neq j)$ contributes a non-negative term $A_{ij}(r)^2\sigma(r)\geq 0$ to the loss. Since $A^\Th_{ij}$ does not interact with any target diagonal terms, setting all off-diagonal components strictly to zero ($A^\Th_{ij}\equiv 0$ for $i\neq j$) globally minimizes the loss without constraining the diagonal fit. Writing $A_\Th(r) = \diag(a^\Th_1(r), a^\Th_2(r), \ldots, a^\Th_d(r))$ with each $a_k(r)$ a degree-$(K-1)$ polynomial, the trace splits as
+\[
+\Tr[\cdots] \;=\; \sum_{k=1}^d \big(a^\Th_k(r) - 1/\sigma_k(r)\big)^2 \sigma_k(r).
+\]
+This reduces the matrix trace to a sum of $d$ independent scalar loss functions:
 \begin{equation}\label{eq:complete_loss_fn}
-    \mathcal{L}(\btheta) = \sum_{k=1}^{d}\mathcal{L}_k (a_k) = \sum_{k=1}^{d}\int \rho_{\Delta}(r)\Big(a_k(r)- \frac{1}{\sigma_k(r)}\Big)^2 \sigma_k(r) \rmd r
+    \mathcal{L}(\btheta) = \sum_{k=1}^{d}\mathcal{L}^\Th_k (a_k) = \sum_{k=1}^{d}\int \rho_{\Delta}(r)\Big(a^\Th_k(r)- \frac{1}{\sigma_k(r)}\Big)^2 \sigma_k(r) \ \rmd r
 \end{equation}
 
 \subsection{Behavior of non-critical modes}\label{subsec:noncrit_behavior}
-For all non-critical directions ($k \geq 2$), the eigenvalues are r-independent constants: $\sigma_k(r)=1$ and $1/\sigma_k(r) =1$. The loss for these modes reduce to an unweighted error given by,
+For all non-critical directions ($k \geq 2$), the eigenvalues are $r$-independent constants: $\sigma_k(r)=1$ and $1/\sigma_k(r) =1$. The loss for these modes reduce to an unweighted error given by,
 \begin{equation}\label{eq:non_crit_loss}
-    \mathcal{L}_k(a_k)= \int \rho_{\Delta}(r)(a_k(r) - 1)^2 \rmd r
+    \mathcal{L}_k(a^\Th_k)= \int \rho_{\Delta}(r)(a^\Th_k(r) - 1)^2\ \rmd r
 \end{equation}
-Since the constant target function $g_k(r) \equiv 1 (k\geq 2)$ lies directly inside the polynomial basis ${\phi_k(r)}_{k=0}^{K-1}$, the student easily achieves zero loss by setting $a_k(r)\equiv 1$. Thus the non-critical modes are learned trivially and contribute zero error to generalization near the bifurcation. 
+Since the constant target function $g_k(r) \equiv 1 (k\geq 2)$ lies directly within the polynomial basis ${\phi_k(r)}_{k=0}^{K-1}$, the student easily achieves zero loss by setting $a^\Th_k(r)\equiv 1$. Thus, the non-critical modes are learned trivially and contribute zero error to generalization near the bifurcation. \sgp{This is directly connected to the spectral bias, we may want to add a discussion in the paper.}
 
 \subsection{Behavior along the critical direction}\label{subsec:crit_behavior}
-All non-trivial learning dynamics collapse entirely into the critical direction $\be_1$. Dropping the subscript($a(r)\equiv a_1(r)$), the loss in \eqref{eq:complete_loss_fn} simplifies to,
+All non-trivial learning dynamics collapse entirely into the critical direction $\be_1$. We drop the subscript ($a^\Th(r)\equiv a^\Th_1(r)$), the loss in \eqref{eq:complete_loss_fn} simplifies to,
 \begin{equation}
-    \mathcal{L}(a) \;=\; \int \rho_{\Delta}(r)\Big(a(r)- \frac{1}{\sigma(r)}\Big)^2\sigma(r)\,\rmd r
+    \mathcal{L}(\Th) \;=\; \int \rho_{\Delta}(r)\bigg(a^\Th(r)- \frac{1}{\sigma(r)}\bigg)^2\sigma(r)\,\rmd r
     \label{eq:L1}
 \end{equation}
-Further defining the effective \emph{target function} $g(r)$ and the \emph{weighting function} $w(r)$
+Further, we define the effective \emph{target function} $g(r)$ and the \emph{weighting function} $w(r)$ as:
 \begin{equation}
-    g(r)\equiv \frac{1}{\sigma(r)} \;=\; \frac{|r - r_c|^\nu}{1 + |r - r_c|^\nu} \qquad w(r)\equiv \rho_{\Delta}(r)\sigma(r) 
+    g(r)\equiv \frac{1}{\sigma(r)} \;=\; \frac{|r - r_c|^\nu}{1 + |r - r_c|^\nu} \qquad w(r)\equiv \rho_{\Delta}(r)\sigma(r),
     \label{eq:gw}
 \end{equation}
 we arrive at a \emph{1D weighted least-squares polynomial fit}:
 \begin{equation}
-\mathcal{L}_1(a) \;=\; \int w(r)\, \big(a(r) - g(r)\big)^2\, \rmd r.
+\mathcal{L}^\Th_1(a) \;=\; \int w(r)\, \big(a^\Th(r) - g(r)\big)^2\, \rmd r.
 \label{eq:L1_compact}
 \end{equation}
-of $g$ on the support of $\rho_\Delta$ (i.e., on $|r-r_c| > \Delta/2$). \sgp{Expand this section.}\ant{Not sure how exactly to expand} Note that
+of $g$ on the support of $\rho_\Delta$ (i.e., on $|r-r_c| > \Delta/2$). Note that
 \begin{itemize}
-  \item For $|r-r_c| \ll 1$: $g(r) \approx |r-r_c|^\nu$ --- the cusp.
-  \item For $|r-r_c| \to \infty$: $g(r) \to 1$ --- saturates.
-  \item At $r = r_c$: $g(r_c) = 0$.
+  \item For $|r-r_c| \ll 1$: the weight function simplifies as $g(r) \approx |r-r_c|^\nu$, exhibiting cusp.
+  \item For $|r-r_c| \to \infty$: the weight function saturates, $g(r) \to 1$.
+  \item At $r = r_c$: we get $g(r_c) = 0$.
 \end{itemize}
 
 \section{Minimising loss}
-
-We henceforth set $r_c = 0$ by relabeling. Expand $a(r) = \sum_{k=0}^{K-1} \theta_k r^k$, with $\btheta = (\theta_0, \ldots, \theta_{K-1})^\top$ and $\bphi(r) = (1, r, r^2, \ldots, r^{K-1})^\top$, so
+From now on we set $r_c = 0$ by relabeling and expand $a^\Th(r) = \sum_{k=0}^{K-1} \theta_k r^k$, with $\btheta = (\theta_0, \ldots, \theta_{K-1})^\top$ and $\bphi(r) = (1, r, r^2, \ldots, r^{K-1})^\top$, so
 \[
-a(r) \;=\; \btheta^\top \bphi(r).
+a^\Th(r) \;=\; \btheta^\top \bphi(r).
 \]
 The loss becomes a quadratic form in $\btheta$:
 \begin{align}
-\mathcal{L}_1 &\;=\; \int w(r)\, \big(\btheta^\top \bphi(r) - g(r)\big)^2\, dr \nonumber\\
+\mathcal{L}_1(\Th) &\;=\; \int w(r)\, \big(\btheta^\top \bphi(r) - g(r)\big)^2\, dr \nonumber\\
 &\;=\; \btheta^\top \!\left[\int w(r)\bphi(r)\bphi(r)^\top dr\right]\! \btheta \;-\; 2\btheta^\top \!\left[\int w(r) g(r) \bphi(r) dr\right] \;+\; \int w(r) g(r)^2 dr.
 \end{align}
-
-Define
+We further define,
 \begin{align}
 M_{kl} &\;\equiv\; \int w(r)\, r^k r^l\, dr \;=\; \int \rho_\Delta(r) \sigma(r)\, r^{k+l}\, dr, \label{eq:Mkl}\\
 b_k &\;\equiv\; \int w(r) g(r)\, r^k\, dr.\label{eq:bk}
@@ -274,11 +300,14 @@ b_k \;=\; \int \rho_\Delta(r)\, r^k\, dr.
 \end{equation}
 That is, $b_k$ is the $k$-th moment of the \emph{unweighted} training distribution $\rho_\Delta$.
 
-Setting $\partial \mathcal{L}_1 / \partial \btheta = 0$ gives the normal equations $M \btheta = \mathbf{b}$, with solution
+Minimising the loss ultimately corresponds to setting $\partial \mathcal{L}_1 / \partial \btheta = 0$ and this gives the normal equations $M \btheta = \mathbf{b}$, with solution
 \begin{equation}
 \bhattheta \;=\; M^{-1} \mathbf{b}.
 \label{eq:hattheta_pop}
 \end{equation}
+
+\subsection{What have we achieved so far?}
+\sgp{Write what you have gained after so much algebra and what you are going to do next (perturbation theory, scaling, prediction error...)}
 
 \section{Scaling analysis}
 \label{sec:scaling_rigorous}
@@ -298,7 +327,7 @@ M_{kl}^{\text{in}}(\Delta) &\;=\; \int_{\Delta/2 < |r| < r_*} \rho_0(r) \sigma_1
 &\;=\; \frac{2\rho_0}{k+l - \nu + 1}\,\Big[r_*^{k+l-\nu+1} - (\Delta/2)^{k+l-\nu+1}\Big] + \frac{2\rho_0}{1+k+l}\,\Big[ r_*^{k+l+1} - (\Delta/2)^{k+l+1}\Big]
 \label{eq:Mkl_inner}
 \end{align}
-For $\nu < 1$ \sout{(Feigenbaum case)} and $k + l \geq 0$ even, the exponent $k+l - \nu + 1 > 0$, so the integral is finite as $\Delta \to 0$ and the $\Delta$-dependence enters as
+For $\nu < 1$ and $k + l \geq 0$ even, the exponent $k+l - \nu + 1 > 0$, so the integral is finite as $\Delta \to 0$ and the $\Delta$-dependence enters as
 \begin{equation}
 M_{kl}^{\text{in}}(\Delta) \;=\; M_{kl}^{\text{in}}(0) \;-\; \frac{2\rho_0}{k+l-\nu+1}\,(\Delta/2)^{k+l-\nu+1} \;-\; \frac{2\rho_0}{k+l+1}(\Delta/2)^{k+l+1}
 \label{eq:Mkl_corr}
@@ -337,10 +366,10 @@ We can write down the leading and sub-leading order of $M$ and $\bvec$ in matrix
 \begin{align}
     M-M^{(0)} =& \begin{pmatrix}
             M_{00} - M^{(0)}_{00} & M_{01}-M^{(0)}_{01} & \cdots & M_{0\,K-1}- M^{(0)}_{0\,K-1} \\
-            M_{10} & M_{11} & \cdots & M_{1\,K-1} \\
+            M_{10} - M^{(0)}_{10} & M_{11}- M^{(0)}_{11} & \cdots & M_{1\,K-1} - M^{(0)}_{1\,K-1} \\
             \vdots & \vdots & \vdots & \vdots \\
-            M_{K0} & \cdots & \cdots & M_{K-1\,K-1}
-    \end{pmatrix} \nonumber \\
+            M_{K0}-M^{(0)}_{K0} & \cdots & \cdots & M_{K-1\,K-1} - M^{(0)}_{K-1\,K-1}
+    \end{pmatrix} \nonumber \\ \nonumber \\
      &\sim \begin{pmatrix}
          O(\Delta^{1-\nu}) & O(\Delta) &\cdots & O(\Delta^{K-\nu})\\
          O(\Delta) & O(\Delta^{3-\nu}) & \cdots  & \cdots \\
@@ -372,7 +401,8 @@ Since $$\hat\btheta(\Delta) = M^{-1}\bvec,$$ then using \eqref{eq:M_expansion} a
 \begin{align}
 \bhattheta(\Delta) &\;=\; M(\Delta)^{-1} \mathbf{b}(\Delta) \nonumber\\
 &\;=\; \big(M^{(0)} + \Delta^{1-\nu} M^{(1)} + \cdots\big)^{-1} \big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
-&\;=\; \Big( M^{(0)}( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]) \Big)^{-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
+&\;=\; \Big( M^{(0)}\Big( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]\Big)\Big)^{-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
+&\;=\; \Big( I+M^{(0)-1}[\Delta^{1-\nu}M^{(1)} + O(\Delta)]\Big)^{-1}M^{(0)-1}\big(\mathbf{b}^{(0)} + \Delta\, \mathbf{b}^{(1)} + \cdots\big) \nonumber\\
 &\;=\; M^{(0)-1}\mathbf{b}^{(0)} \;+\; \Delta^{1-\nu}\,\Big[-M^{(0)-1} M^{(1)} M^{(0)-1}\mathbf{b}^{(0)}\Big] \;+\; O(\Delta).
 \label{eq:theta_expansion}
 \end{align}
@@ -491,37 +521,31 @@ Now that we have arrived at the expected scaling for the infinite data sample li
 \sgp{What is the meaning of this loss-function, why is there a $\lambda$. Cite relevant references, why is it called the ridge loss. Do a toy-example to show how minimization works and put it as a boxes.} The loss function in \eqref{eq:L1_compact} has been modified to accommodate finite number of data points P. 
 \vspace{1em}
 
-\begin{tcolorbox}[
-    colback=blue!5!white,
-    colframe=blue!65!black,
-    title=\textbf{Ridge Regression Explained},
-    fonttitle=\bfseries\sffamily,
-    arc=2mm,
-    boxrule=0.8pt
-]
-\textbf{Core Idea:} Standard linear regression tries to fit data points by minimizing prediction errors. However, when data is noisy, limited ($P$ is small), or features are heavily correlated, standard regression often overfits—assigning massive, unstable weights $\hat{\theta}$ to match tiny noise fluctuations. 
+\begin{entetebox}{\large{Ridge Regression}}
+
+\textbf{Core idea:} Standard linear regression tries to fit data points by minimizing prediction errors. However, when data is noisy, limited ($P$ is small), or features are heavily correlated, standard regression often overfits—assigning massive, unstable weights $\hat{\theta}$ to match tiny noise fluctuations. 
 
 Ridge regression solves this by adding an $L_2$ \textbf{penalty term} ($\frac{\lambda}{2} \|\hat{\theta}\|^2$) that artificially penalizes large parameter magnitudes.
 
 \tcbline
 
-\textbf{Physical Toy Example: Order Parameter Extraction near Criticality}
+\textbf{Toy example: Order parameter extraction near criticality}
 
 Imagine estimating a soft mode $\hat{\theta}$ from $d$ spatial sensors measuring local order $\phi(r_\mu)$. Near a critical point, neighboring sensors become strongly correlated due to diverging correlation lengths.
 
 \begin{itemize}
-    \item \textbf{Ordinary Least Squares ($\lambda = 0$):} 
+    \item \textbf{Ordinary least squares ($\lambda = 0$):} 
     With finite time samples $P$, the empirical covariance matrix $\widehat{\Sigma} = \frac{1}{P}\Phi^\top \Phi$ is ill-conditioned. Standard regression assigns unphysical, wildly oscillating weights to adjacent sensors ($\hat{\theta}_1 = +10^4, \hat{\theta}_2 = -10^4$) to fit sample noise.
     
-    \item \textbf{Ridge Regression ($\lambda > 0$):} 
+    \item \textbf{Ridge regression ($\lambda > 0$):} 
     The penalty term prevents singular inversions $(\widehat{\Sigma} + \lambda I)^{-1}$. It dampens high-frequency sample noise, smoothly spreading weights across the collective critical mode $e_1$.
 \end{itemize}
 
 \tcbline
 
-\textbf{Key Takeaway for Finite Sampling Effects:}
+\textbf{Key takeaway for finite sampling effects:}
 In the finite data regime ($P < \infty$), $\lambda$ acts as an effective noise floor that regularizes singular empirical modes, directly governing how fast $\hat{\theta}$ converges to the theoretical infinite-sample limit $\theta^*$.
-\end{tcolorbox}
+\end{entetebox}
 
 Differentiating the loss function with respect to $\hat\theta$ and setting to zero, we arrive at
 $$ \sum_{\mu=1}^{P} w(r_\mu)\phi(r_\mu)\phi(r_\mu)^T \hat\theta - \sum_{\mu=1}^{P} w(r_\mu)y_\mu\phi(r_\mu) + \lambda \hat\theta = 0$$
@@ -757,4 +781,5 @@ $$r_\mu \overset{i.i.d}{\sim} \rho_\Delta, $$
 $$ y = g(r_\mu) + \xi_\mu; \hspace{1em} \xi \sim \mathcal{N}(0,\tau^2),$$
 and
 $$\phi(r) = (1, r, r^2,..., r^{K-1})^T$$
+\end{onehalfspace}
 \end{document}
